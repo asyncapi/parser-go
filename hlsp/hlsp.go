@@ -1,7 +1,8 @@
 package hlsp
 
 import (
-    "fmt"
+	"fmt"
+	"github.com/xeipuuv/gojsonschema"
 )
 
 // Parse receives either a YAML or JSON AsyncAPI document.
@@ -9,9 +10,17 @@ import (
 // Skips specification extensions and schemas validation.
 // If validation fails, the Parser/Validator should trigger an error.
 // Produces a beautified version of the document in JSON Schema Draft 07.
-func Parse(document string) (string, error) {
+func Parse(AsyncAPI string) (bool, []gojsonschema.ResultError) {
+	schemaLoader := gojsonschema.NewReferenceLoader("file://../asyncapi/2.0.0/schema.json")
+    documentLoader := gojsonschema.NewStringLoader(AsyncAPI)
 
-	return "", nil
+	result, err := gojsonschema.Validate(schemaLoader, documentLoader)
+	if err != nil {
+		// It would be nice not to panic here!
+		panic(err.Error())
+	}
+
+	return result.Valid(), result.Errors()
 }
 
 func convertToJSON(doc string) (string, error) {
