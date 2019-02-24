@@ -19,7 +19,7 @@ func convertToJSON(doc string) (string, error) {
 		return doc, nil
 	}
 	
-	convertedDoc = convertFromYAMLtoJSON(doc)
+	convertedDoc, err := convertFromYAMLtoJSON(doc)
 	if err != nil {
 		return convertedDoc, nil
 	}
@@ -31,6 +31,6 @@ func isJSON(doc string) bool {
 	return false
 }
 
-func isYAML(doc string) bool {
-	return false
+func convertFromYAMLtoJSON(doc string) (string, error) {
+	return "", nil
 }
