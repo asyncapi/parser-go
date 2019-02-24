@@ -5,16 +5,17 @@ import (
 	"strings"
 )
 
+// ExtensionProps holds a collection of Extensions properties
 type ExtensionProps struct {
 	Extensions map[string]interface{}
 }
 
-// Unmarshals only specification extensions.
+// UnmarshalExtensions unmarshals only specification extensions.
 func UnmarshalExtensions(value *ExtensionProps, data []byte) error {
 	var everything map[string]interface{}
-	
+
 	err := json.Unmarshal(data, &everything)
-	if (err != nil) {
+	if err != nil {
 		return err
 	}
 

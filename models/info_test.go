@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"gotest.tools/assert"
-    is "gotest.tools/assert/cmp"
+	is "gotest.tools/assert/cmp"
 )
 
 func TestInfoUnmarshal(t *testing.T) {
