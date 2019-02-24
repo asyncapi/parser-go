@@ -2,7 +2,6 @@ package hlsp
 
 import (
     "fmt"
-    "github.com/xeipuuv/gojsonschema"
 )
 
 // Parse receives either a YAML or JSON AsyncAPI document.
@@ -10,18 +9,18 @@ import (
 // Skips specification extensions and schemas validation.
 // If validation fails, the Parser/Validator should trigger an error.
 // Produces a beautified version of the document in JSON Schema Draft 07.
-func Parse(document string) (string, err error) {
+func Parse(document string) (string, error) {
 
 	return "", nil
 }
 
 func convertToJSON(doc string) (string, error) {
 	if isJSON(doc) {
-		// convert here JSON to YML
-		return "", nil
+		return doc, nil
 	}
-
+	
 	if isYAML(doc) {
+		// convert here YAML to JSON
 		return doc, nil
 	}
 
