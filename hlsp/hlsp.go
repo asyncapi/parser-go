@@ -19,12 +19,12 @@ func convertToJSON(doc string) (string, error) {
 		return doc, nil
 	}
 	
-	if isYAML(doc) {
-		// convert here YAML to JSON
-		return doc, nil
+	convertedDoc = convertFromYAMLtoJSON(doc)
+	if err != nil {
+		return convertedDoc, nil
 	}
 
-	return "", fmt.Errorf("Not supported Document format. Supported formats: JSON or YAML")
+	return "", fmt.Errorf("Unsupported document format. Supported formats are: JSON or YAML.")
 }
 
 func isJSON(doc string) bool {
