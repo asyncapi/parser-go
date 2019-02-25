@@ -11,24 +11,27 @@ func TestInfoUnmarshal(t *testing.T) {
 	info := Info{}
 	err := info.Unmarshal([]byte(`{"title":"my API", "x-test": "test value"}`))
 	assert.Assert(t, is.Nil(err))
-	assert.Equal(t, len(info.ExtensionProps.Extensions), 0)
+	assert.Equal(t, len(info.Extensions), 0)
 }
 
 func TestInfoMarshal(t *testing.T) {
 	info := Info{
+		Extensions: Extensions{
+			"x-test": "test value",
+		},
 		Title:   "My API",
 		Version: "1.0.0",
 	}
 	result, err := info.Marshal()
 	assert.Assert(t, is.Nil(err))
-	assert.Equal(t, string(result), `{"title":"My API","version":"1.0.0"}`)
+	assert.Equal(t, string(result), `{"x-test":"test value","title":"My API","version":"1.0.0"}`)
 }
 
 func TestInfoContactUnmarshal(t *testing.T) {
 	info := Info{}
 	err := info.Unmarshal([]byte(`{"title":"my API", "contact": { "name": "Fran" } }`))
 	assert.Assert(t, is.Nil(err))
-	assert.Equal(t, len(info.ExtensionProps.Extensions), 0)
+	assert.Equal(t, len(info.Extensions), 0)
 	assert.Equal(t, info.Contact.Name, "Fran")
 }
 
@@ -49,7 +52,7 @@ func TestInfoLicenseUnmarshal(t *testing.T) {
 	info := Info{}
 	err := info.Unmarshal([]byte(`{"title":"my API", "license": { "name": "Apache" } }`))
 	assert.Assert(t, is.Nil(err))
-	assert.Equal(t, len(info.ExtensionProps.Extensions), 0)
+	assert.Equal(t, len(info.Extensions), 0)
 	assert.Equal(t, info.License.Name, "Apache")
 }
 
