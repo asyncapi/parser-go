@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"testing"
 
 	"gotest.tools/assert"
@@ -9,27 +10,43 @@ import (
 
 func TestInfoUnmarshal(t *testing.T) {
 	info := Info{}
-	err := info.Unmarshal([]byte(`{"title":"my API", "x-test": "test value"}`))
+	err := json.Unmarshal([]byte(`{
+		"title":"my API",
+		"contact":{
+			"name":"Fran",
+			"email":"fmvilas@gmail.com"
+		},
+		"license": {
+			"name": "Apache 2.0"
+		},
+		"x-test": {"nested": "object"},
+		"invalid": "invalid value"
+	}`), &info)
 	assert.Assert(t, is.Nil(err))
-	assert.Equal(t, len(info.Extensions), 0)
+	assert.Equal(t, info.Title, "my API")
+	assert.Equal(t, info.Contact.Name, "Fran")
+	assert.Equal(t, info.Contact.Email, "fmvilas@gmail.com")
+	assert.Equal(t, info.License.Name, "Apache 2.0")
+	assert.Equal(t, string(info.Extensions["x-test"]), `{"nested": "object"}`)
+	assert.Assert(t, is.Nil(info.Extensions["invalid"]))
 }
 
 func TestInfoMarshal(t *testing.T) {
 	info := Info{
-		Extensions: Extensions{
-			"x-test": "test value",
+		Extensions: map[string]json.RawMessage{
+			"x-test": json.RawMessage(`"test value"`),
 		},
 		Title:   "My API",
 		Version: "1.0.0",
 	}
-	result, err := info.Marshal()
+	result, err := json.Marshal(info)
 	assert.Assert(t, is.Nil(err))
 	assert.Equal(t, string(result), `{"x-test":"test value","title":"My API","version":"1.0.0"}`)
 }
 
 func TestInfoContactUnmarshal(t *testing.T) {
 	info := Info{}
-	err := info.Unmarshal([]byte(`{"title":"my API", "contact": { "name": "Fran" } }`))
+	err := json.Unmarshal([]byte(`{"title":"my API", "contact": { "name": "Fran" } }`), &info)
 	assert.Assert(t, is.Nil(err))
 	assert.Equal(t, len(info.Extensions), 0)
 	assert.Equal(t, info.Contact.Name, "Fran")
@@ -43,14 +60,14 @@ func TestInfoContactMarshal(t *testing.T) {
 			Name: "Fran",
 		},
 	}
-	result, err := info.Marshal()
+	result, err := json.Marshal(info)
 	assert.Assert(t, is.Nil(err))
 	assert.Equal(t, string(result), `{"title":"My API","contact":{"name":"Fran"},"version":"1.0.0"}`)
 }
 
 func TestInfoLicenseUnmarshal(t *testing.T) {
 	info := Info{}
-	err := info.Unmarshal([]byte(`{"title":"my API", "license": { "name": "Apache" } }`))
+	err := json.Unmarshal([]byte(`{"title":"my API", "license": { "name": "Apache" } }`), &info)
 	assert.Assert(t, is.Nil(err))
 	assert.Equal(t, len(info.Extensions), 0)
 	assert.Equal(t, info.License.Name, "Apache")
@@ -64,7 +81,7 @@ func TestInfoLicenseMarshal(t *testing.T) {
 			Name: "Apache",
 		},
 	}
-	result, err := info.Marshal()
+	result, err := json.Marshal(info)
 	assert.Assert(t, is.Nil(err))
 	assert.Equal(t, string(result), `{"title":"My API","license":{"name":"Apache"},"version":"1.0.0"}`)
 }

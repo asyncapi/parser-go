@@ -6,35 +6,30 @@ import (
 	"strings"
 )
 
-// Extension holds a collection of specification extensions
-type Extensions = map[string]interface{}
-
-// UnmarshalExtensions unmarshals only specification extensions.
-func UnmarshalExtensions(data []byte) (Extensions, error) {
-	var everything map[string]interface{}
-
-	err := json.Unmarshal(data, &everything)
-	if err != nil {
+// ExtensionsFromJSON obtains AsyncAPI extensions from a JSON object.
+func ExtensionsFromJSON(data []byte) (map[string]json.RawMessage, error) {
+	exts := make(map[string]json.RawMessage, 0)
+	extensions := make(map[string]json.RawMessage, 0)
+	// parse all the defined properties
+	if err := json.Unmarshal(data, &exts); err != nil {
 		return nil, err
 	}
-
-	result := make(Extensions)
-	for k, v := range everything {
+	for k, v := range exts {
 		if strings.HasPrefix(k, "x-") {
-			result[k] = v
+			extensions[k] = v
 		}
 	}
-
-	return result, err
+	return extensions, nil
 }
 
-// MarshalWithExtensions marshals only specification extensions.
-func MarshalWithExtensions(object interface{}, value Extensions) ([]byte, error) {
-	if value == nil {
-		return nil, errors.New("Extensions can't be nil.")
+// MergeExtensions merges extensions with a JSON object.
+func MergeExtensions(jsonByteArray []byte, value map[string]json.RawMessage) ([]byte, error) {
+	if jsonByteArray == nil {
+		return nil, errors.New("jsonByteArray can't be nil")
 	}
-	if object == nil {
-		return nil, errors.New("Object can't be nil.")
+
+	if value == nil {
+		return jsonByteArray, nil
 	}
 
 	e, err := json.Marshal(value)
@@ -42,20 +37,15 @@ func MarshalWithExtensions(object interface{}, value Extensions) ([]byte, error)
 		return nil, err
 	}
 
-	j, err := json.Marshal(object)
-	if err != nil {
-		return nil, err
-	}
-
-	if len(e) <= 2 && len(j) <= 2 {
+	if len(e) <= 2 && len(jsonByteArray) <= 2 {
 		return []byte(`{}`), nil
-	} else if len(e) <= 2 && len(j) > 2 {
-		return j, nil
-	} else if len(e) > 2 && len(j) <= 2 {
+	} else if len(e) <= 2 && len(jsonByteArray) > 2 {
+		return jsonByteArray, nil
+	} else if len(e) > 2 && len(jsonByteArray) <= 2 {
 		return e, nil
 	}
 
-	var jsonString = string(j)
+	var jsonString = string(jsonByteArray)
 	var extensionsString = string(e)
 	result := jsonString[:1] + extensionsString[1:len(extensionsString)-1] + `,` + jsonString[1:]
 
