@@ -8,6 +8,40 @@ import (
 	is "gotest.tools/assert/cmp"
 )
 
+func TestExtensionsFromJSON(t *testing.T) {
+	result, err := ExtensionsFromJSON([]byte(`{
+		"not-extension": "should not be included",
+		"x-test": "test value"
+	}`))
+	assert.Assert(t, is.Nil(err))
+	assert.Assert(t, is.Nil(result["not-extension"]))
+	assert.Equal(t, string(result["x-test"]), `"test value"`)
+}
+
+func TestExtensionsFromJSONWithObject(t *testing.T) {
+	result, err := ExtensionsFromJSON([]byte(`{
+		"x-test": {"one": {"two": 2}}
+	}`))
+	assert.Assert(t, is.Nil(err))
+	assert.Equal(t, string(result["x-test"]), `{"one": {"two": 2}}`)
+}
+
+func TestExtensionsFromJSONWithArray(t *testing.T) {
+	result, err := ExtensionsFromJSON([]byte(`{
+		"x-test": [1, "one", true]
+	}`))
+	assert.Assert(t, is.Nil(err))
+	assert.Equal(t, string(result["x-test"]), `[1, "one", true]`)
+}
+
+func TestExtensionsFromJSONWithNull(t *testing.T) {
+	result, err := ExtensionsFromJSON([]byte(`{
+		"x-test": null
+	}`))
+	assert.Assert(t, is.Nil(err))
+	assert.Equal(t, string(result["x-test"]), `null`)
+}
+
 func TestMergeExtensions(t *testing.T) {
 	info := Info{
 		Title:   "Test",
