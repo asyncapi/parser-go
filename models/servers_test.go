@@ -86,3 +86,28 @@ func TestServerVariablesMarshal(t *testing.T) {
 	assert.Assert(t, is.Nil(err))
 	assert.Equal(t, string(result), `{"x-test":"test value","url":"api.streetlights.com","scheme":"mqtt","variables":{"port":{"default":"1883","description":"Secure connection"}}}`)
 }
+
+func TestServerSecurityUnmarshal(t *testing.T) {
+	server := &Server{}
+	err := server.Unmarshal([]byte(`
+	{
+		"url":"api.streetlights.com", 
+		"scheme": "mqtt",
+		"variables": {
+			"port": {
+				"description": "Secure connection",
+				"default": "1883",
+				"enum": [
+					"1883",
+					"8883"
+				]
+			}
+		}
+	}
+	`))
+	assert.Assert(t, is.Nil(err))
+	assert.Equal(t, server.URL, "api.streetlights.com")
+	assert.Equal(t, server.Variables.AdditionalProperties["port"].Description, "Secure connection")
+	assert.Equal(t, server.Variables.AdditionalProperties["port"].Default, "1883")
+	assert.DeepEqual(t, server.Variables.AdditionalProperties["port"].Enum, []string{"1883", "8883"})
+}

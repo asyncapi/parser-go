@@ -8,14 +8,14 @@ import (
 
 // Server maps AsyncAPI serves.item object
 type Server struct {
-	Extensions    Extensions       `json:"-"`
-	URL           string           `json:"url"`
-	Description   string           `json:"description,omitempty"`
-	Scheme        string           `json:"scheme"`
-	SchemeVersion string           `json:"schemeVersion,omitempty"`
-	Variables     *ServerVariables `json:"variables,omitempty"`
-	BaseChannel   string           `json:"baseChannel,omitempty"`
-	// Security      []*SecurityRequirement `json:"security,omitempty"`
+	Extensions    Extensions             `json:"-"`
+	URL           string                 `json:"url"`
+	Description   string                 `json:"description,omitempty"`
+	Scheme        string                 `json:"scheme"`
+	SchemeVersion string                 `json:"schemeVersion,omitempty"`
+	Variables     *ServerVariables       `json:"variables,omitempty"`
+	BaseChannel   string                 `json:"baseChannel,omitempty"`
+	Security      []*SecurityRequirement `json:"security,omitempty"`
 }
 
 // Unmarshal unmarshals JSON
@@ -33,7 +33,7 @@ func (value *Server) Marshal() ([]byte, error) {
 
 // ServerVariables object
 type ServerVariables struct {
-	AdditionalProperties map[string]*ServerVariable `json:",omitempty"`
+	AdditionalProperties map[string]*ServerVariable `json:"-,omitempty"`
 }
 
 // UnmarshalJSON unmarshals JSON
@@ -90,11 +90,16 @@ type ServerVariable struct {
 }
 
 // Unmarshal unmarshals JSON
-func (value *ServerVariable) Unmarshal(data []byte) error {
-	return json.Unmarshal(data, value)
-}
+// func (value *ServerVariable) Unmarshal(data []byte) error {
+// 	return json.Unmarshal(data, value)
+// }
 
-// Marshal marshals JSON
-func (value *ServerVariable) Marshal() ([]byte, error) {
-	return json.Marshal(value)
+// // Marshal marshals JSON
+// func (value *ServerVariable) Marshal() ([]byte, error) {
+// 	return json.Marshal(value)
+// }
+
+// SecurityRequirement an Object representing a map
+type SecurityRequirement struct {
+	AdditionalProperties map[string][]string `json:"-,omitempty"`
 }
