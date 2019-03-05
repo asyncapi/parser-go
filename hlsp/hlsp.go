@@ -11,9 +11,9 @@ import (
 // Skips specification extensions and schemas validation.
 // If validation fails, the Parser/Validator should trigger an error.
 // Produces a beautified version of the document in JSON Schema Draft 07.
-func Parse(AsyncAPI string) (bool, []gojsonschema.ResultError) {
+func Parse(AsyncAPI []byte) (bool, []gojsonschema.ResultError) {
 	schemaLoader := gojsonschema.NewReferenceLoader("file://../asyncapi/2.0.0/schema.json")
-	documentLoader := gojsonschema.NewStringLoader(AsyncAPI)
+	documentLoader := gojsonschema.NewStringLoader(string(AsyncAPI))
 
 	result, err := gojsonschema.Validate(schemaLoader, documentLoader)
 	if err != nil {
@@ -34,7 +34,7 @@ func convertToJSON(doc string) (string, error) {
 		return convertedDoc, nil
 	}
 
-	return "", fmt.Errorf("Unsupported document format. Supported formats are: JSON or YAML.")
+	return "", fmt.Errorf("[Unsupported document format] Supported formats are: JSON or YAML")
 }
 
 func isJSON(doc string) bool {
