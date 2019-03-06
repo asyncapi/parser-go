@@ -1,46 +1,75 @@
 package hlsp
 
 import (
+	"encoding/json"
 	"fmt"
 
+	"github.com/ghodss/yaml"
 	"github.com/xeipuuv/gojsonschema"
 )
+
+// ParserError is custom struct to hold different error types of the parser
+type ParserError struct {
+	errorMessage  string
+	parsingErrors []gojsonschema.ResultError
+}
+
+// Error returns the error message.
+func (v *ParserError) Error() string {
+	return v.errorMessage
+}
+
+// ParsingErrors returns the errors that occurred while parsing the AsyncAPI document.
+func (v *ParserError) ParsingErrors() []gojsonschema.ResultError {
+	return v.parsingErrors
+}
 
 // Parse receives either a YAML or JSON AsyncAPI document.
 // It parses the document and checks if it's valid AsyncAPI.
 // Skips specification extensions and schemas validation.
 // If validation fails, the Parser/Validator should trigger an error.
 // Produces a beautified version of the document in JSON Schema Draft 07.
-func Parse(AsyncAPI []byte) (bool, []gojsonschema.ResultError) {
+func Parse(AsyncAPI []byte) (json.RawMessage, *ParserError) {
 	schemaLoader := gojsonschema.NewReferenceLoader("file://../asyncapi/2.0.0/schema.json")
-	documentLoader := gojsonschema.NewStringLoader(string(AsyncAPI))
+	AsyncAPI, err := convertFromYAMLtoJSON(AsyncAPI)
+	if err != nil {
+		return nil, &ParserError{
+			errorMessage: err.Error(),
+		}
+	}
+
+	documentLoader := gojsonschema.NewBytesLoader(AsyncAPI)
 
 	result, err := gojsonschema.Validate(schemaLoader, documentLoader)
 	if err != nil {
-		// It would be nice not to panic here!
-		panic(err.Error())
+		return nil, &ParserError{
+			errorMessage: err.Error(),
+		}
 	}
 
-	return result.Valid(), result.Errors()
+	if result.Valid() {
+		return AsyncAPI, nil
+	}
+
+	return AsyncAPI, &ParserError{
+		errorMessage:  "[Invalid AsyncAPI document] Check out .ParsingErrors() for more information.",
+		parsingErrors: result.Errors(),
+	}
 }
 
-func convertToJSON(doc string) (string, error) {
-	if isJSON(doc) {
-		return doc, nil
-	}
-
+func convertToJSON(doc []byte) ([]byte, error) {
 	convertedDoc, err := convertFromYAMLtoJSON(doc)
 	if err != nil {
 		return convertedDoc, nil
 	}
 
-	return "", fmt.Errorf("[Unsupported document format] Supported formats are: JSON or YAML")
+	return nil, fmt.Errorf("[Unsupported document format] Supported formats are: JSON or YAML")
 }
 
 func isJSON(doc string) bool {
 	return false
 }
 
-func convertFromYAMLtoJSON(doc string) (string, error) {
-	return "", nil
+func convertFromYAMLtoJSON(doc []byte) ([]byte, error) {
+	return yaml.YAMLToJSON(doc)
 }
