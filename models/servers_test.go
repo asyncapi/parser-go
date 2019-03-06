@@ -1,11 +1,24 @@
 package models
 
 import (
+	"encoding/json"
+	"fmt"
+	"reflect"
 	"testing"
 
 	"gotest.tools/assert"
 	is "gotest.tools/assert/cmp"
 )
+
+func EqualJSON(s1 []byte, s2 string) bool {
+	var o1 interface{}
+	var o2 interface{}
+
+	json.Unmarshal([]byte(s1), &o1)
+	json.Unmarshal([]byte(s2), &o2)
+
+	return reflect.DeepEqual(o1, o2)
+}
 
 func TestServerUnmarshal(t *testing.T) {
 	server := &Server{}
@@ -33,8 +46,18 @@ func TestServerMarshal(t *testing.T) {
 		SchemeVersion: "0.9.1",
 	}
 	result, err := server.MarshalJSON()
+	fmt.Println(string(result))
 	assert.Assert(t, is.Nil(err))
-	assert.Equal(t, string(result), `{"scheme":"mqtt","schemeVersion":"0.9.1","url":"api.streetlights.com"}`)
+	assert.Assert(t, EqualJSON(result, `
+	{
+		"scheme":"mqtt",
+		"schemeVersion":"0.9.1",
+		"url":"api.streetlights.com",
+		"baseChannel":"",
+		"description":"",
+		"security":null,
+		"variables":null
+	}`))
 }
 
 func TestServerWithExtensionsMarshal(t *testing.T) {

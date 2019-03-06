@@ -80,26 +80,21 @@ func IsZeroOfUnderlyingType(x interface{}) bool {
 
 // MarshalJSON marshals JSON
 func (value *Server) MarshalJSON() ([]byte, error) {
+	// type serverAlias Server
 	// if value.Extensions != nil {
-	// 	return MarshalWithExtensions(value, value.Extensions)
+	// 	type serverAlias Server
+	// 	return MarshalWithExtensions(serverAlias, value.Extensions)
 	// }
 
-	valueMap := make(map[string]interface{})
-	valueMap["baseChannel"] = value.BaseChannel
-	valueMap["description"] = value.Description
-	valueMap["scheme"] = value.Scheme
-	valueMap["schemeVersion"] = value.SchemeVersion
-	valueMap["security"] = value.Security
-	valueMap["url"] = value.Url
-	valueMap["variables"] = value.Variables
-
-	cleanedMap := make(map[string]interface{})
-	for k, v := range valueMap {
-		if !IsZeroOfUnderlyingType(valueMap[k]) {
-			cleanedMap[k] = v
-		}
-	}
-	return json.Marshal(cleanedMap)
+	return json.Marshal(map[string]interface{}{
+		"baseChannel":   value.BaseChannel,
+		"description":   value.Description,
+		"scheme":        value.Scheme,
+		"schemeVersion": value.SchemeVersion,
+		"security":      value.Security,
+		"url":           value.Url,
+		"variables":     value.Variables,
+	})
 }
 
 // ServerVariables object
