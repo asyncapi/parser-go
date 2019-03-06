@@ -2,11 +2,32 @@ package models
 
 import (
 	"encoding/json"
+	"io/ioutil"
+	"os"
 	"testing"
 
 	"gotest.tools/assert"
 	is "gotest.tools/assert/cmp"
 )
+
+func TestA(t *testing.T) {
+	jsonFile, err := os.Open("../asyncapi/2.0.0/example.json")
+	if err != nil {
+		t.Log(err)
+	}
+	defer jsonFile.Close()
+
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+	var AsyncAPI AsyncapiDocument
+	err = json.Unmarshal(byteValue, &AsyncAPI)
+	if err != nil {
+		t.Log(err)
+	}
+	t.Log(AsyncAPI.Channels["event/{streetlightId}/lighting/measured"].Subscribe.Message.Payload)
+
+	// j, err := json.Marshal(AsyncAPI.Channels)
+	// t.Log(string(j))
+}
 
 func TestInfoUnmarshal(t *testing.T) {
 	info := Info{}
@@ -62,7 +83,7 @@ func TestInfoContactMarshal(t *testing.T) {
 	}
 	result, err := json.Marshal(info)
 	assert.Assert(t, is.Nil(err))
-	assert.Equal(t, string(result), `{"title":"My API","contact":{"name":"Fran"},"version":"1.0.0"}`)
+	assert.Equal(t, string(result), `{"title":"My API","version":"1.0.0","contact":{"name":"Fran"}}`)
 }
 
 func TestInfoLicenseUnmarshal(t *testing.T) {
@@ -83,5 +104,5 @@ func TestInfoLicenseMarshal(t *testing.T) {
 	}
 	result, err := json.Marshal(info)
 	assert.Assert(t, is.Nil(err))
-	assert.Equal(t, string(result), `{"title":"My API","license":{"name":"Apache"},"version":"1.0.0"}`)
+	assert.Equal(t, string(result), `{"title":"My API","version":"1.0.0","license":{"name":"Apache"}}`)
 }

@@ -8,7 +8,7 @@ import (
 )
 
 func TestParse(t *testing.T) {
-	result, err := Parse(`{
+	result, err := Parse([]byte(`{
 		"asyncapi":"2.0.0",
 		"id": "my-id",
 		"info": {
@@ -16,7 +16,7 @@ func TestParse(t *testing.T) {
 			"version": "1.0.0"
 		},
 		"channels": {}
-	}`)
+	}`))
 
 	assert.Assert(t, is.Nil(err))
 	assert.Equal(t, result, true)
