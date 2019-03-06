@@ -21,6 +21,12 @@ func (value *SecurityScheme) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
+	value.Type = jsonMap.Type
+	value.Description = jsonMap.Description
+	value.In = jsonMap.In
+	value.Flows = jsonMap.Flows
+	value.OpenIdConnectUrl = jsonMap.OpenIdConnectUrl
+
 	exts, err := ExtensionsFromJSON(data)
 	if err != nil {
 		return err
@@ -65,6 +71,13 @@ func (value *HttpSecurityScheme) UnmarshalJSON(data []byte) error {
 	if err = json.Unmarshal(data, &jsonMap); err != nil {
 		return err
 	}
+
+	value.Scheme = jsonMap.Scheme
+	value.Description = jsonMap.Description
+	value.Type = jsonMap.Type
+	value.BearerFormat = jsonMap.BearerFormat
+	value.Name = jsonMap.Name
+	value.In = jsonMap.In
 
 	exts, err := ExtensionsFromJSON(data)
 	if err != nil {
