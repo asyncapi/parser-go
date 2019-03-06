@@ -9,7 +9,7 @@ import (
 
 func TestServerUnmarshal(t *testing.T) {
 	server := &Server{}
-	err := server.Unmarshal([]byte(`
+	err := server.UnmarshalJSON([]byte(`
 	{
 		"url":"api.streetlights.com", 
 		"description": "my description",
@@ -19,7 +19,7 @@ func TestServerUnmarshal(t *testing.T) {
 	}
 	`))
 	assert.Assert(t, is.Nil(err))
-	assert.Equal(t, server.URL, "api.streetlights.com")
+	assert.Equal(t, server.Url, "api.streetlights.com")
 	assert.Equal(t, server.Description, "my description")
 	assert.Equal(t, server.Scheme, "mqtt")
 	assert.Equal(t, server.SchemeVersion, "0.9.1")
@@ -28,21 +28,32 @@ func TestServerUnmarshal(t *testing.T) {
 
 func TestServerMarshal(t *testing.T) {
 	server := Server{
-		Extensions: Extensions{
-			"x-test": "test value",
-		},
-		URL:           "api.streetlights.com",
+		Url:           "api.streetlights.com",
 		Scheme:        "mqtt",
 		SchemeVersion: "0.9.1",
 	}
-	result, err := server.Marshal()
+	result, err := server.MarshalJSON()
+	assert.Assert(t, is.Nil(err))
+	assert.Equal(t, string(result), `{"scheme":"mqtt","schemeVersion":"0.9.1","url":"api.streetlights.com"}`)
+}
+
+func TestServerWithExtensionsMarshal(t *testing.T) {
+	server := Server{
+		Extensions: Extensions{
+			"x-test": "test value",
+		},
+		Url:           "api.streetlights.com",
+		Scheme:        "mqtt",
+		SchemeVersion: "0.9.1",
+	}
+	result, err := server.MarshalJSON()
 	assert.Assert(t, is.Nil(err))
 	assert.Equal(t, string(result), `{"x-test":"test value","url":"api.streetlights.com","scheme":"mqtt","schemeVersion":"0.9.1"}`)
 }
 
 func TestServerVariablesUnmarshal(t *testing.T) {
 	server := &Server{}
-	err := server.Unmarshal([]byte(`
+	err := server.UnmarshalJSON([]byte(`
 	{
 		"url":"api.streetlights.com", 
 		"scheme": "mqtt",
@@ -59,7 +70,7 @@ func TestServerVariablesUnmarshal(t *testing.T) {
 	}
 	`))
 	assert.Assert(t, is.Nil(err))
-	assert.Equal(t, server.URL, "api.streetlights.com")
+	assert.Equal(t, server.Url, "api.streetlights.com")
 	assert.Equal(t, server.Variables.AdditionalProperties["port"].Description, "Secure connection")
 	assert.Equal(t, server.Variables.AdditionalProperties["port"].Default, "1883")
 	assert.DeepEqual(t, server.Variables.AdditionalProperties["port"].Enum, []string{"1883", "8883"})
@@ -76,20 +87,20 @@ func TestServerVariablesMarshal(t *testing.T) {
 		Extensions: Extensions{
 			"x-test": "test value",
 		},
-		URL:    "api.streetlights.com",
+		Url:    "api.streetlights.com",
 		Scheme: "mqtt",
 		Variables: &ServerVariables{
 			AdditionalProperties: additionalProperties,
 		},
 	}
-	result, err := server.Marshal()
+	result, err := server.MarshalJSON()
 	assert.Assert(t, is.Nil(err))
 	assert.Equal(t, string(result), `{"x-test":"test value","url":"api.streetlights.com","scheme":"mqtt","variables":{"port":{"default":"1883","description":"Secure connection"}}}`)
 }
 
 func TestServerSecurityUnmarshal(t *testing.T) {
 	server := &Server{}
-	err := server.Unmarshal([]byte(`
+	err := server.UnmarshalJSON([]byte(`
 	{
 		"url":"api.streetlights.com", 
 		"scheme": "mqtt",
@@ -106,7 +117,7 @@ func TestServerSecurityUnmarshal(t *testing.T) {
 	}
 	`))
 	assert.Assert(t, is.Nil(err))
-	assert.Equal(t, server.URL, "api.streetlights.com")
+	assert.Equal(t, server.Url, "api.streetlights.com")
 	assert.Equal(t, server.Variables.AdditionalProperties["port"].Description, "Secure connection")
 	assert.Equal(t, server.Variables.AdditionalProperties["port"].Default, "1883")
 	assert.DeepEqual(t, server.Variables.AdditionalProperties["port"].Enum, []string{"1883", "8883"})

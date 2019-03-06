@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"reflect"
 )
 
 // Server maps AsyncAPI serves.item object
 type Server struct {
 	Extensions    Extensions             `json:"-"`
-	URL           string                 `json:"url"`
+	Url           string                 `json:"url"`
 	Description   string                 `json:"description,omitempty"`
 	Scheme        string                 `json:"scheme"`
 	SchemeVersion string                 `json:"schemeVersion,omitempty"`
@@ -18,17 +19,87 @@ type Server struct {
 	Security      []*SecurityRequirement `json:"security,omitempty"`
 }
 
-// Unmarshal unmarshals JSON
-func (value *Server) Unmarshal(data []byte) error {
-	return json.Unmarshal(data, value)
+// UnmarshalJSON unmarshals JSON
+func (value *Server) UnmarshalJSON(b []byte) error {
+	// schemeReceived := false
+	// urlReceived := false
+	var jsonMap map[string]json.RawMessage
+	if err := json.Unmarshal(b, &jsonMap); err != nil {
+		return err
+	}
+	// parse all the defined properties
+	for k, v := range jsonMap {
+		switch k {
+		case "baseChannel":
+			if err := json.Unmarshal([]byte(v), &value.BaseChannel); err != nil {
+				return err
+			}
+		case "description":
+			if err := json.Unmarshal([]byte(v), &value.Description); err != nil {
+				return err
+			}
+		case "scheme":
+			if err := json.Unmarshal([]byte(v), &value.Scheme); err != nil {
+				return err
+			}
+			// schemeReceived = true
+		case "schemeVersion":
+			if err := json.Unmarshal([]byte(v), &value.SchemeVersion); err != nil {
+				return err
+			}
+		case "security":
+			if err := json.Unmarshal([]byte(v), &value.Security); err != nil {
+				return err
+			}
+		case "url":
+			if err := json.Unmarshal([]byte(v), &value.Url); err != nil {
+				return err
+			}
+			// urlReceived = true
+		case "variables":
+			if err := json.Unmarshal([]byte(v), &value.Variables); err != nil {
+				return err
+			}
+		default:
+			return fmt.Errorf("additional property not allowed: \"" + k + "\"")
+		}
+	}
+	return nil
 }
 
-// Marshal marshals JSON
-func (value *Server) Marshal() ([]byte, error) {
-	if value.Extensions == nil {
-		return json.Marshal(value)
+// func (value *Server) Marshal() ([]byte, error) {
+// 	if value.Extensions == nil {
+// 		return json.Marshal(value)
+// 	}
+// 	return MarshalWithExtensions(value, value.Extensions)
+// }
+// IsZeroOfUnderlyingType
+func IsZeroOfUnderlyingType(x interface{}) bool {
+	return reflect.DeepEqual(x, reflect.Zero(reflect.TypeOf(x)).Interface())
+}
+
+// MarshalJSON marshals JSON
+func (value *Server) MarshalJSON() ([]byte, error) {
+	// if value.Extensions != nil {
+	// 	return MarshalWithExtensions(value, value.Extensions)
+	// }
+
+	valueMap := make(map[string]interface{})
+	valueMap["baseChannel"] = value.BaseChannel
+	valueMap["description"] = value.Description
+	valueMap["scheme"] = value.Scheme
+	valueMap["schemeVersion"] = value.SchemeVersion
+	valueMap["security"] = value.Security
+	valueMap["url"] = value.Url
+	valueMap["variables"] = value.Variables
+
+	cleanedMap := make(map[string]interface{})
+	for k, v := range valueMap {
+		if !IsZeroOfUnderlyingType(valueMap[k]) {
+			cleanedMap[k] = v
+		}
 	}
-	return MarshalWithExtensions(value, value.Extensions)
+	return json.Marshal(cleanedMap)
 }
 
 // ServerVariables object
