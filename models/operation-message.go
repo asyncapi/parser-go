@@ -29,6 +29,20 @@ func (value *OperationMessage) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
+	value.SchemaFormat = jsonMap.SchemaFormat
+	value.ContentType = jsonMap.ContentType
+	value.Headers = jsonMap.Headers
+	value.Payload = jsonMap.Payload
+	value.Tags = jsonMap.Tags
+	value.Summary = jsonMap.Summary
+	value.Name = jsonMap.Name
+	value.Title = jsonMap.Title
+	value.Description = jsonMap.Description
+	value.ExternalDocs = jsonMap.ExternalDocs
+	value.Deprecated = jsonMap.Deprecated
+	value.Example = jsonMap.Example
+	value.OneOf = jsonMap.OneOf
+
 	exts, err := ExtensionsFromJSON(data)
 	if err != nil {
 		return err
