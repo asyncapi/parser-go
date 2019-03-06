@@ -1,11 +1,47 @@
 package hlsp
 
 import (
+	"encoding/json"
+	"io/ioutil"
+	"os"
 	"testing"
 
+	"github.com/asyncapi/parser/models"
 	"gotest.tools/assert"
 	is "gotest.tools/assert/cmp"
 )
+
+// TODO: Remove this test, as it's not a unit test.
+func Test(t *testing.T) {
+	yamlFile, err := os.Open("../asyncapi/2.0.0/example.yaml")
+	if err != nil {
+		t.Log(err)
+		return
+	}
+	defer yamlFile.Close()
+
+	fileBytes, err := ioutil.ReadAll(yamlFile)
+	if err != nil {
+		t.Log(err)
+		return
+	}
+
+	jsonFile, e := Parse(fileBytes)
+	if e != nil {
+		t.Log(e.Error())
+		t.Log(e.ParsingErrors())
+		return
+	}
+
+	var AsyncAPI models.AsyncapiDocument
+	err = json.Unmarshal(jsonFile, &AsyncAPI)
+	if err != nil {
+		t.Log(err)
+		return
+	}
+	j, _ := AsyncAPI.Channels["event/{streetlightId}/lighting/measured"].Subscribe.Message.Payload.MarshalJSON()
+	t.Log(string(j))
+}
 
 func TestParse(t *testing.T) {
 	asyncapi := []byte(`
