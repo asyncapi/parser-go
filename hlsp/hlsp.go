@@ -35,7 +35,11 @@ func ParseJSON(jsonDocument []byte) (json.RawMessage, *ParserError) {
 	}
 
 	if result.Valid() {
-		return jsonDocument, nil
+		beautifiedDoc, err := Beautify(jsonDocument)
+		if err != nil {
+			panic(err)
+		}
+		return beautifiedDoc, nil
 	}
 
 	return jsonDocument, &ParserError{
