@@ -6,20 +6,10 @@ import (
 	"github.com/asyncapi/parser/models"
 )
 
-//ParserMessage maps AsyncAPI "x-parser-message" object
-type ParserMessage struct {
-	Message       *models.OperationMessage `json:"message,omitempty"`
-	ChannelName   string                   `json:"channelName,omitempty"`
-	OperationName string                   `json:"operationName,omitempty"`
-	OperationId   string                   `json:"operationId,omitempty"`
-}
-
-type ParserMessages []ParserMessage
-
 // Beautify Create a list of messages on the root level of the document, using field name x-parser-messages
 func Beautify(jsonDocument []byte) (json.RawMessage, error) {
 	asyncAPIObj := models.AsyncapiDocument{}
-	var messages ParserMessages
+	var messages models.ParserMessages
 
 	if err := json.Unmarshal(jsonDocument, &asyncAPIObj); err != nil {
 		return nil, err
@@ -40,15 +30,15 @@ func Beautify(jsonDocument []byte) (json.RawMessage, error) {
 	return result, err
 }
 
-func getOperationData(channelItem *models.ChannelItem) ParserMessage {
+func getOperationData(channelItem *models.ChannelItem) models.ParserMessage {
 	if channelItem.Publish != nil {
-		return ParserMessage{
+		return models.ParserMessage{
 			OperationName: "publish",
 			OperationId:   channelItem.Publish.OperationId,
 			Message:       channelItem.Publish.Message,
 		}
 	}
-	return ParserMessage{
+	return models.ParserMessage{
 		OperationName: "subscribe",
 		OperationId:   channelItem.Subscribe.OperationId,
 		Message:       channelItem.Subscribe.Message,
