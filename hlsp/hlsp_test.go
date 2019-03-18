@@ -20,17 +20,18 @@ channels: {}`)
 
 	doc, err := Parse(asyncapi)
 	assert.Assert(t, is.Nil(err))
-	assert.Equal(t, doc.Asyncapi, "2.0.0")
-	assert.Equal(t, doc.Id, "myapi")
-	assert.Equal(t, doc.Info.Title, "My API")
-	assert.Equal(t, doc.Info.Version, "1.0.0")
+	var m map[string]interface{}
+	e := json.Unmarshal(doc, &m)
+	assert.Assert(t, is.Nil(e))
+	assert.Equal(t, m["asyncapi"], "2.0.0")
+	assert.Equal(t, m["id"], "myapi")
 }
 func TestParseWithEmptyYAML(t *testing.T) {
 	asyncapi := []byte(``)
 
 	_, err := Parse(asyncapi)
 	assert.Equal(t, err.Error(), "[Invalid AsyncAPI document] Document is empty or null.")
-	assert.Equal(t, len(err.ParsingErrors()), 0)
+	assert.Equal(t, len(err.ParsingErrors), 0)
 }
 func TestParseWithInvalidDocument(t *testing.T) {
 	asyncapi := []byte(`
@@ -42,8 +43,8 @@ channels: {}`)
 
 	_, err := Parse(asyncapi)
 	assert.Equal(t, err.Error(), "[Invalid AsyncAPI document] Check out err.ParsingErrors() for more information.")
-	assert.Equal(t, len(err.ParsingErrors()), 1)
-	assert.Equal(t, err.ParsingErrors()[0].Details()["property"], "id")
+	assert.Equal(t, len(err.ParsingErrors), 1)
+	assert.Equal(t, err.ParsingErrors[0].Details()["property"], "id")
 }
 
 func TestParseJSON(t *testing.T) {
@@ -75,7 +76,7 @@ func TestParseJSONWithInvalidJSON(t *testing.T) {
 
 	jsonDocument, err := ParseJSON(asyncapi)
 	assert.Equal(t, err.Error(), "unexpected EOF")
-	assert.Equal(t, len(err.ParsingErrors()), 0)
+	assert.Equal(t, len(err.ParsingErrors), 0)
 	assert.Equal(t, string(jsonDocument), ``)
 }
 
@@ -84,7 +85,7 @@ func TestParseJSONWithEmptyJSON(t *testing.T) {
 
 	jsonDocument, err := ParseJSON(asyncapi)
 	assert.Equal(t, err.Error(), "EOF")
-	assert.Equal(t, len(err.ParsingErrors()), 0)
+	assert.Equal(t, len(err.ParsingErrors), 0)
 	assert.Equal(t, string(jsonDocument), ``)
 }
 
@@ -100,8 +101,8 @@ func TestParseJSONWithInvalidDocument(t *testing.T) {
 
 	jsonDocument, err := ParseJSON(asyncapi)
 	assert.Equal(t, err.Error(), "[Invalid AsyncAPI document] Check out err.ParsingErrors() for more information.")
-	assert.Equal(t, len(err.ParsingErrors()), 1)
-	assert.Equal(t, err.ParsingErrors()[0].Details()["property"], "id")
+	assert.Equal(t, len(err.ParsingErrors), 1)
+	assert.Equal(t, err.ParsingErrors[0].Details()["property"], "id")
 	assert.Equal(t, string(jsonDocument), `{
 		"asyncapi": "2.0.0",
 		"info": {

@@ -5,22 +5,21 @@ import (
 	"path"
 	"runtime"
 
-	"github.com/asyncapi/parser/models"
 	"github.com/ghodss/yaml"
 	"github.com/xeipuuv/gojsonschema"
 )
 
 // Parse receives either a YAML or JSON AsyncAPI document, and tries to parse it.
-func Parse(yamlOrJSONDocument []byte) (*models.ParsedAsyncAPI, *ParserError) {
+func Parse(yamlOrJSONDocument []byte) (json.RawMessage, *ParserError) {
 	jsonDocument, err := yaml.YAMLToJSON(yamlOrJSONDocument)
 	if err != nil {
 		return nil, &ParserError{
-			errorMessage: err.Error(),
+			ErrorMessage: err.Error(),
 		}
 	}
 	if string(jsonDocument) == "null" {
 		return nil, &ParserError{
-			errorMessage: "[Invalid AsyncAPI document] Document is empty or null.",
+			ErrorMessage: "[Invalid AsyncAPI document] Document is empty or null.",
 		}
 	}
 
@@ -29,15 +28,7 @@ func Parse(yamlOrJSONDocument []byte) (*models.ParsedAsyncAPI, *ParserError) {
 		return nil, e
 	}
 
-	var parsedAsyncAPI models.ParsedAsyncAPI
-	err = json.Unmarshal(beautifiedDoc, &parsedAsyncAPI)
-	if err != nil {
-		return nil, &ParserError{
-			errorMessage: err.Error(),
-		}
-	}
-
-	return &parsedAsyncAPI, nil
+	return beautifiedDoc, nil
 }
 
 // ParseJSON receives a JSON AsyncAPI document.
@@ -49,7 +40,7 @@ func ParseJSON(jsonDocument []byte) (json.RawMessage, *ParserError) {
 	_, filename, _, ok := runtime.Caller(1)
 	if ok == false {
 		return nil, &ParserError{
-			errorMessage: "[Unexpected error] Could not resolve relative file path to AsyncAPI schema.",
+			ErrorMessage: "[Unexpected error] Could not resolve relative file path to AsyncAPI schema.",
 		}
 	}
 	filepath := path.Join(path.Dir(filename), "../asyncapi/2.0.0/schema.json")
@@ -59,7 +50,7 @@ func ParseJSON(jsonDocument []byte) (json.RawMessage, *ParserError) {
 	result, err := gojsonschema.Validate(schemaLoader, documentLoader)
 	if err != nil {
 		return nil, &ParserError{
-			errorMessage: err.Error(),
+			ErrorMessage: err.Error(),
 		}
 	}
 
@@ -67,14 +58,14 @@ func ParseJSON(jsonDocument []byte) (json.RawMessage, *ParserError) {
 		beautifiedDoc, err := Beautify(jsonDocument)
 		if err != nil {
 			return nil, &ParserError{
-				errorMessage: err.Error(),
+				ErrorMessage: err.Error(),
 			}
 		}
 		return beautifiedDoc, nil
 	}
 
 	return jsonDocument, &ParserError{
-		errorMessage:  "[Invalid AsyncAPI document] Check out err.ParsingErrors() for more information.",
-		parsingErrors: result.Errors(),
+		ErrorMessage:  "[Invalid AsyncAPI document] Check out err.ParsingErrors() for more information.",
+		ParsingErrors: result.Errors(),
 	}
 }
