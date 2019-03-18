@@ -20,7 +20,9 @@ typedef struct { const char *p; ptrdiff_t n; } _GoString_;
 #line 3 "cparser.go"
  typedef struct {
   char *result;
-  char *err;
+  char **err;
+  int  errCount;
+  _Bool hasErrors;
  } _ParseResult_;
 
 #line 1 "cgo-generated-wrapper"

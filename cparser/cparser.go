@@ -2,37 +2,57 @@ package main
 
 // typedef struct {
 //  char *result;
-//  char *err;
+//  char **err;
+//  int  errCount;
+//  _Bool hasErrors;
 // } _ParseResult_;
 import "C"
 import (
-	"fmt"
+	"unsafe"
 
 	"github.com/asyncapi/parser/hlsp"
 )
 
 //export Parse
 func Parse(yamlOrJSONDocument string) C._ParseResult_ {
-	fmt.Println(string(yamlOrJSONDocument))
 	jsonDoc, err := hlsp.Parse([]byte(yamlOrJSONDocument))
 
 	if err != nil {
+		ea, count := makeCErrorArray(err)
 		return C._ParseResult_{
-			result: nil,
-			err:    C.CString(err.Error()),
+			result:    nil,
+			err:       ea,
+			errCount:  count,
+			hasErrors: count > 0,
 		}
 	}
 
-	// var parsedAsyncAPI models.ParsedAsyncAPI
-	// err = json.Unmarshal(jsonDoc, &parsedAsyncAPI)
-	// if err != nil {
-	//  return nil, errors.New(err.Error())
-	// }
-
 	return C._ParseResult_{
-		result: C.CString(string(jsonDoc)),
-		err:    nil,
+		result:    C.CString(string(jsonDoc)),
+		err:       nil,
+		errCount:  0,
+		hasErrors: false,
 	}
+}
+
+func makeCErrorArray(err *hlsp.ParserError) (**C.char, C.int) {
+	var arr []string
+	arr = append(arr, err.Error())
+	if err.ParsingErrors != nil {
+		for _, msg := range err.ParsingErrors {
+			arr = append(arr, string(msg.String()))
+		}
+	}
+	cArray := C.malloc(C.size_t(len(arr)) * C.size_t(unsafe.Sizeof(uintptr(0))))
+
+	// convert the C array to a Go Array so we can index it
+	a := (*[1<<30 - 1]*C.char)(cArray)
+
+	for idx, str := range arr {
+		a[idx] = C.CString(str)
+	}
+
+	return (**C.char)(cArray), C.int(len(arr))
 }
 
 func main() {
