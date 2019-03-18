@@ -36,7 +36,7 @@ func TestBeautify(t *testing.T) {
 		return
 	}
 	xParserMessages := asyncAPI.Extensions["x-parser-messages"]
-	var messageList ParserMessages
+	var messageList models.ParserMessages
 	json.Unmarshal(xParserMessages, &messageList)
 
 	assert.Equal(t, len(messageList), 4)
@@ -90,7 +90,7 @@ func TestBeautifyOneChannel(t *testing.T) {
 		return
 	}
 	xParserMessages := asyncAPI.Extensions["x-parser-messages"]
-	var messageList ParserMessages
+	var messageList models.ParserMessages
 	json.Unmarshal(xParserMessages, &messageList)
 
 	assert.Equal(t, len(messageList), 1)
