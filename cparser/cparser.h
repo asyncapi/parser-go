@@ -74,6 +74,8 @@ extern "C" {
 #endif
 
 
+//Parse is the C-friendly version of the parser.Parse method.
+
 extern _ParseResult_ Parse(GoString p0);
 
 #ifdef __cplusplus
