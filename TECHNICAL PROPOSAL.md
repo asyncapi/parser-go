@@ -151,3 +151,13 @@ Since we can't anticipate the definition of the extensions, this information mus
 |Input|Output|Required by|
 |-----|------|-----------|
 |An AsyncAPI specification extension in YAML or JSON format.| A resolved version of the specification extension in JSON Schema Draft 07 format.| Parser/Validator
+
+## FAQ
+
+### Why Go?
+
+We chose Go because of three reasons:
+
+1. It compiles to C shared objects, so it means we can reuse the work done here in another languages very easily, avoiding the cost of maintaining many versions in different programming languages.
+2. Go performance is really good.
+3. The Go community is already big and keeps growing, which makes it a safe bet. That was the key reason not to choose Rust, which is much better than Go regarding points 1 and 2.
