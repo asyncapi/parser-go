@@ -130,11 +130,19 @@ The role of HLSP is to:
 |-----|------|-----------|
 |An AsyncAPI document in YAML or JSON format.| A beautified version of the document in JSON Schema Draft 07 format.| Parser/Validator
 
+###### API
+
+```go
+func Parse(asyncapiYAMLorJSON []byte, options ParseOptions) (json.RawMessage, error) {
+  ...
+}
+```
+
 ### Schema parser
 
 This component is in charge of understanding all the messages in a document and passing them to the appropiate schema parser. As an example, if a message's `schemaFormat` is `protobuf`, this component should pass the message payload to the Protobuf Schema Parser, which in turn will return the schema converted to JSON Schema Draft 07.
 
-Once the schema is parsed and converted, this component will update the messages in the document with the result.
+Once the schema is parsed and converted, this component should update the message and add the `x-asyncapi-parsed` property with the result in JSON Schema Draft 07.
 
 Since we can't anticipate how many schema formats we'll have, this information must be provided by the user when calling the parser.
 
@@ -142,9 +150,25 @@ Since we can't anticipate how many schema formats we'll have, this information m
 |-----|------|-----------|
 |An AsyncAPI **schema** in YAML or JSON format.| A beautified version of the **schema** in JSON Schema Draft 07 format.| Parser/Validator
 
+###### API
+
+```go
+func Parse(asyncapiJSON []byte, schemaParsers []SchemaParser) (json.RawMessage, error) {
+  ...
+}
+```
+
+###### API of a specific schema parser instance (e.g., Protobuf Schema Parser)
+
+```go
+func Parse(protobufSchema []byte) (json.RawMessage, error) {
+  ...
+}
+```
+
 ### Specification extension parser
 
-This component is in charge of parsing the specification extensions and `protocolInfo` objects. The flow is pretty much the same as the one with schema parsers.
+This component is in charge of parsing the specification extensions and `protocolInfo` objects. The flow is pretty much the same as the one with schema parsers, with the exception that in this case we should not update the document.
 
 Since we can't anticipate the definition of the extensions, this information must be provided by the user when calling the parser.
 
@@ -152,11 +176,19 @@ Since we can't anticipate the definition of the extensions, this information mus
 |-----|------|-----------|
 |An AsyncAPI specification extension in YAML or JSON format.| A resolved version of the specification extension in JSON Schema Draft 07 format.| Parser/Validator
 
+###### API
+
+```go
+func Parse(asyncapiJSON []byte, extensionParsers []json.RawMessage) (json.RawMessage, error) {
+  ...
+}
+```
+
 ## FAQ
 
 ### Why Go?
 
-We chose Go because of three reasons:
+We chose Go for three reasons:
 
 1. It compiles to C shared objects, so it means we can reuse the work done here in another languages very easily, avoiding the cost of maintaining many versions in different programming languages.
 2. Go performance is really good.
