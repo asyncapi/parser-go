@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -11,7 +12,8 @@ import (
 )
 
 var (
-	filename = flag.String("file", parser.DefaultDefinitionFile, fmt.Sprintf("-file %s", parser.DefaultDefinitionFile))
+	defaultDefinitionFile = "asyncapi/2.0.0/example.yaml"
+	filename = flag.String("file", defaultDefinitionFile, fmt.Sprintf("-file %s", defaultDefinitionFile))
 )
 
 func init() {
@@ -20,9 +22,14 @@ func init() {
 
 func main() {
 	fBytes, err := ioutil.ReadFile(*filename)
-	p, err := parser.Parse(fBytes)
-	handleError(err, "error parsing definition file")
-	fmt.Println("Definition %s", p)
+	handleError(err, "Reading file")
+	p, perr := parser.Parse(fBytes)
+	if perr != nil {
+		fmt.Fprintln(os.Stderr, errors.Wrap(perr, perr.Error()))
+		os.Exit(2)
+	}
+	jOut, err:= json.MarshalIndent(p, "","  ")
+	fmt.Println("Definition %s", string(jOut))
 }
 
 func handleError(err error, msg string) {

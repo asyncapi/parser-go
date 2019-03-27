@@ -27,7 +27,6 @@ func Parse(yamlOrJSONDocument []byte) (json.RawMessage, *ParserError) {
 	if e != nil {
 		return nil, e
 	}
-
 	return beautifiedDoc, nil
 }
 
