@@ -9,8 +9,7 @@ package main
 import "C"
 import (
 	"unsafe"
-
-	"github.com/asyncapi/parser/hlsp"
+	"github.com/asyncapi/parser/pkg/hlsp"
 )
 
 //Parse is the C-friendly version of the parser.Parse method.

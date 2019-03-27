@@ -43,7 +43,7 @@ func ParseJSON(jsonDocument []byte) (json.RawMessage, *ParserError) {
 			ErrorMessage: "[Unexpected error] Could not resolve relative file path to AsyncAPI schema.",
 		}
 	}
-	filepath := path.Join(path.Dir(filename), "../asyncapi/2.0.0/schema.json")
+	filepath := path.Join(path.Dir(filename), "../../asyncapi/2.0.0/schema.json")
 	schemaLoader := gojsonschema.NewReferenceLoader("file://" + filepath)
 	documentLoader := gojsonschema.NewBytesLoader(jsonDocument)
 

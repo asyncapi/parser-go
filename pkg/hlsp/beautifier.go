@@ -3,7 +3,7 @@ package hlsp
 import (
 	"encoding/json"
 
-	"github.com/asyncapi/parser/models"
+	"github.com/asyncapi/parser/pkg/models"
 )
 
 // Beautify Create a list of messages on the root level of the document, using field name x-parser-messages
