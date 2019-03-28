@@ -13,7 +13,7 @@ import (
 
 var (
 	defaultDefinitionFile = "asyncapi/2.0.0/example.yaml"
-	filename = flag.String("file", defaultDefinitionFile, fmt.Sprintf("-file %s", defaultDefinitionFile))
+	filename              = flag.String("file", defaultDefinitionFile, fmt.Sprintf("-file %s", defaultDefinitionFile))
 )
 
 func init() {
@@ -28,8 +28,8 @@ func main() {
 		fmt.Fprintln(os.Stderr, errors.Wrap(perr, perr.Error()))
 		os.Exit(2)
 	}
-	jOut, err:= json.MarshalIndent(p, "","  ")
-	fmt.Println("Definition %s", string(jOut))
+	jOut, err := json.MarshalIndent(p, "", "  ")
+	fmt.Printf("Definition %s", string(jOut))
 }
 
 func handleError(err error, msg string) {
