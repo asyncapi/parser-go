@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/asyncapi/parser/models"
+"github.com/asyncapi/parser/pkg/models"
 	"gotest.tools/assert"
 	is "gotest.tools/assert/cmp"
 )
