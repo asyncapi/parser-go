@@ -1,4 +1,4 @@
-package main
+package cparser
 
 // typedef struct {
 //  char *result;
@@ -9,6 +9,7 @@ package main
 import "C"
 import (
 	"unsafe"
+
 	"github.com/asyncapi/parser/pkg/hlsp"
 )
 
