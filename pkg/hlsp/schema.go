@@ -1,3 +1,7 @@
+package hlsp
+
+func getSchema() []byte {
+	return []byte(`
 {
     "title": "AsyncAPI 2.0.0 schema.",
     "$schema": "http://json-schema.org/draft-07/schema#",
@@ -1274,4 +1278,6 @@
             "$ref": "http://json-schema.org/draft-04/schema#/properties/enum"
         }
     }
+}
+	`)
 }
