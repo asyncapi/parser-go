@@ -2,8 +2,6 @@ package hlsp
 
 import (
 	"encoding/json"
-	"path"
-	"runtime"
 
 	"github.com/ghodss/yaml"
 	"github.com/xeipuuv/gojsonschema"
@@ -36,14 +34,7 @@ func Parse(yamlOrJSONDocument []byte) (json.RawMessage, *ParserError) {
 // If validation fails, the Parser/Validator should trigger an error.
 // Produces a beautified version of the document in JSON Schema Draft 07.
 func ParseJSON(jsonDocument []byte) (json.RawMessage, *ParserError) {
-	_, filename, _, ok := runtime.Caller(1)
-	if ok == false {
-		return nil, &ParserError{
-			ErrorMessage: "[Unexpected error] Could not resolve relative file path to AsyncAPI schema.",
-		}
-	}
-	filepath := path.Join(path.Dir(filename), "../../asyncapi/2.0.0/schema.json")
-	schemaLoader := gojsonschema.NewReferenceLoader("file://" + filepath)
+	schemaLoader := gojsonschema.NewBytesLoader(getSchema())
 	documentLoader := gojsonschema.NewBytesLoader(jsonDocument)
 
 	result, err := gojsonschema.Validate(schemaLoader, documentLoader)
