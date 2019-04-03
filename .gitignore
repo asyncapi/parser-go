@@ -5,6 +5,13 @@
 *.so
 *.dylib
 
+# Exclude our binaries
+!bin/*.exe
+!bin/*.exe~
+!bin/*.dll
+!bin/*.so
+!bin/*.dylib
+
 # Test binary, build with `go test -c`
 *.test
 
