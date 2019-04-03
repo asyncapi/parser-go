@@ -1,4 +1,4 @@
-package tester
+package main
 
 import (
 	"encoding/json"
