@@ -1,5 +1,3 @@
-rm cparser/cparser.so cparser/cparser.so.dylib cparser/cparser.h
+#!/bin/bash
 
-go build -o ./cparser/cparser.so -buildmode=c-shared ./cparser/cparser.go
-
-g++ -dynamiclib -undefined suppress -flat_namespace ./cparser/*.so -o ./cparser/cparser.so.dylib
+xgo -v -x -pkg=cparser -out bin/cparser -buildmode=c-shared -targets="windows/amd64,darwin/amd64,linux/amd64" github.com/asyncapi/parser
