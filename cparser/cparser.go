@@ -1,4 +1,4 @@
-package cparser
+package main
 
 // typedef struct {
 //  char *result;
