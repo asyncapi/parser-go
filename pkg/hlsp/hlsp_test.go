@@ -1,10 +1,8 @@
 package hlsp
 
 import (
-	"encoding/json"
 	"testing"
 
-"github.com/asyncapi/parser/pkg/models"
 	"gotest.tools/assert"
 	is "gotest.tools/assert/cmp"
 )
@@ -20,11 +18,8 @@ channels: {}`)
 
 	doc, err := Parse(asyncapi)
 	assert.Assert(t, is.Nil(err))
-	var m map[string]interface{}
-	e := json.Unmarshal(doc, &m)
-	assert.Assert(t, is.Nil(e))
-	assert.Equal(t, m["asyncapi"], "2.0.0")
-	assert.Equal(t, m["id"], "myapi")
+	assert.Equal(t, doc.Asyncapi, "2.0.0")
+	assert.Equal(t, doc.Id, "myapi")
 }
 func TestParseWithEmptyYAML(t *testing.T) {
 	asyncapi := []byte(``)
@@ -60,7 +55,7 @@ func TestParseJSON(t *testing.T) {
 
 	jsonDocument, err := ParseJSON(asyncapi)
 	assert.Assert(t, is.Nil(err))
-	assert.Equal(t, string(jsonDocument), `{"x-parser-messages":null,
+	assert.Equal(t, string(jsonDocument), `{
 		"asyncapi": "2.0.0",
 		"id": "myapi",
 		"info": {
@@ -111,53 +106,4 @@ func TestParseJSONWithInvalidDocument(t *testing.T) {
 		},
 		"channels": {}
 	}`)
-}
-
-func TestParseBeautify(t *testing.T) {
-	asyncapi := []byte(`{
-		"asyncapi": "2.0.0",
-		"id": "myapi",
-		"info": {
-			"title": "My API",
-			"version": "1.0.0"
-		},
-		"channels": {
-			"event/lighting/measured": {
-				"subscribe": {
-					"operationId": "receiveLightMeasurement",
-					"message": {
-						"name": "lightMeasured",
-						"title": "Light measured",
-						"contentType": "application/json",
-						"payload": {
-							"type": "object",
-							"properties": {
-								"lumens": {
-									"type": "integer",
-									"minimum": 0,
-									"description": "Light intensity measured in lumens."
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}`)
-
-	beautifiedDoc, pErr := ParseJSON(asyncapi)
-	assert.Check(t, is.Nil(pErr))
-
-	var asyncAPI models.AsyncapiDocument
-	err := json.Unmarshal(beautifiedDoc, &asyncAPI)
-	assert.Check(t, is.Nil(err))
-
-	xParserMessages := asyncAPI.Extensions["x-parser-messages"]
-	var messageList models.ParserMessages
-	json.Unmarshal(xParserMessages, &messageList)
-
-	assert.Equal(t, len(messageList), 1)
-	assert.Equal(t, messageList[0].ChannelName, "event/lighting/measured")
-	assert.Equal(t, messageList[0].OperationName, "subscribe")
-	assert.Equal(t, messageList[0].OperationId, "receiveLightMeasurement")
 }

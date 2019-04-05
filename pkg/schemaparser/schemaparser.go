@@ -13,14 +13,7 @@ type SchemaParser interface {
 
 // Parse parses all the message schemas in an AsyncAPI document.
 // Note: It doesn't parse the messages under components that are not used.
-func Parse(asyncapiJSON json.RawMessage) *errs.ParserError {
-	var doc models.AsyncapiDocument
-	if err := json.Unmarshal(asyncapiJSON, &doc); err != nil {
-		return &errs.ParserError{
-			ErrorMessage: err.Error(),
-		}
-	}
-
+func Parse(doc *models.AsyncapiDocument) *errs.ParserError {
 	for _, channel := range doc.Channels {
 		if channel.Publish != nil {
 			if err := parseMessages(channel.Publish.Message); err != nil {
@@ -65,20 +58,10 @@ func parseMessage(message *models.Message) *errs.ParserError {
 		}
 	}
 
-	var schemaParser SchemaParser
-
 	switch message.SchemaFormat {
-	case "":
-	case "openapi":
-	case "asyncapi":
-	case "application/vnd.oai.openapi":
-	case "application/vnd.asyncapi":
-		schemaParser = OpenAPI{}
+	case "", "openapi", "asyncapi", "application/vnd.oai.openapi", "application/vnd.asyncapi":
+		return OpenAPI{}.Parse(j)
 	}
 
-	if schemaParser == nil {
-		return nil
-	}
-
-	return schemaParser.Parse(j)
+	return nil
 }

@@ -3,6 +3,7 @@ package schemaparser
 import (
 	"testing"
 
+	"github.com/asyncapi/parser/pkg/hlsp"
 	"gotest.tools/assert"
 	is "gotest.tools/assert/cmp"
 )
@@ -80,6 +81,9 @@ func TestParse(t *testing.T) {
 		}
 	}`)
 
-	err := Parse(asyncapi)
+	doc, err := hlsp.Parse(asyncapi)
+	assert.Assert(t, is.Nil(err))
+
+	err = Parse(doc)
 	assert.Assert(t, is.Nil(err))
 }

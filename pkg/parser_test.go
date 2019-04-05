@@ -3,8 +3,9 @@ package parser
 import (
 	"fmt"
 	"testing"
-	is "gotest.tools/assert/cmp"
+
 	"gotest.tools/assert"
+	is "gotest.tools/assert/cmp"
 )
 
 func TestParse(t *testing.T) {

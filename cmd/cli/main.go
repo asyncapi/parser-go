@@ -26,6 +26,7 @@ func main() {
 	p, perr := parser.Parse(fBytes)
 	if perr != nil {
 		fmt.Fprintln(os.Stderr, errors.Wrap(perr, perr.Error()))
+		fmt.Fprintln(os.Stderr, perr.ParsingErrors)
 		os.Exit(2)
 	}
 	jOut, err := json.MarshalIndent(p, "", "  ")

@@ -3,13 +3,33 @@ package hlsp
 import (
 	"encoding/json"
 
+	"github.com/asyncapi/parser/pkg/models"
+
 	"github.com/asyncapi/parser/pkg/errs"
 	"github.com/ghodss/yaml"
 	"github.com/xeipuuv/gojsonschema"
 )
 
 // Parse receives either a YAML or JSON AsyncAPI document, and tries to parse it.
-func Parse(yamlOrJSONDocument []byte) (json.RawMessage, *errs.ParserError) {
+func Parse(yamlOrJSONDocument []byte) (*models.AsyncapiDocument, *errs.ParserError) {
+	jsonDocument, err := ParseForC(yamlOrJSONDocument)
+	if err != nil {
+		return nil, err
+	}
+
+	var doc models.AsyncapiDocument
+	if err := json.Unmarshal(jsonDocument, &doc); err != nil {
+		return nil, &errs.ParserError{
+			ErrorMessage: err.Error(),
+		}
+	}
+
+	return &doc, nil
+}
+
+// ParseForC receives either a YAML or JSON AsyncAPI document, and tries to parse it.
+// Returns the result as a json.RawMessage.
+func ParseForC(yamlOrJSONDocument []byte) (json.RawMessage, *errs.ParserError) {
 	jsonDocument, err := yaml.YAMLToJSON(yamlOrJSONDocument)
 	if err != nil {
 		return nil, &errs.ParserError{
@@ -22,11 +42,11 @@ func Parse(yamlOrJSONDocument []byte) (json.RawMessage, *errs.ParserError) {
 		}
 	}
 
-	beautifiedDoc, e := ParseJSON(jsonDocument)
+	jsonBytes, e := ParseJSON(jsonDocument)
 	if e != nil {
 		return nil, e
 	}
-	return beautifiedDoc, nil
+	return jsonBytes, nil
 }
 
 // ParseJSON receives a JSON AsyncAPI document.
@@ -46,13 +66,7 @@ func ParseJSON(jsonDocument []byte) (json.RawMessage, *errs.ParserError) {
 	}
 
 	if result.Valid() {
-		beautifiedDoc, err := Beautify(jsonDocument)
-		if err != nil {
-			return nil, &errs.ParserError{
-				ErrorMessage: err.Error(),
-			}
-		}
-		return beautifiedDoc, nil
+		return jsonDocument, nil
 	}
 
 	return jsonDocument, &errs.ParserError{
