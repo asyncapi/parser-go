@@ -1,4 +1,4 @@
-package hlsp
+package errs
 
 import (
 	"github.com/xeipuuv/gojsonschema"

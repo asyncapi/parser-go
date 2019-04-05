@@ -733,7 +733,7 @@ func getSchema() []byte {
                     },
                     "properties": {
                         "schemaFormat": {
-                            "type": "string"
+							"type": "string"
                         },
                         "contentType": {
                             "type": "string"
