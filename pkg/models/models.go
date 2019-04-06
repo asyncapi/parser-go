@@ -403,6 +403,7 @@ type Parameters map[string]*Parameter
 type Schema struct {
 	Extensions           map[string]json.RawMessage `json:"-"`
 	Ref                  *ReferenceObject           `json:"$ref,omitempty"`
+	Nullable             bool                       `json:"nullable,omitempty"`
 	Format               string                     `json:"format,omitempty"`
 	Title                string                     `json:"title,omitempty"`
 	Description          string                     `json:"description,omitempty"`
@@ -449,6 +450,7 @@ func (value *Schema) UnmarshalJSON(data []byte) error {
 	}
 
 	value.Ref = jsonMap.Ref
+	value.Nullable = jsonMap.Nullable
 	value.Format = jsonMap.Format
 	value.Title = jsonMap.Title
 	value.Description = jsonMap.Description
@@ -498,6 +500,7 @@ func (value Schema) MarshalJSON() ([]byte, error) {
 	type SchemaAlias Schema
 	jsonByteArray, err := json.Marshal(&SchemaAlias{
 		Ref:                  value.Ref,
+		Nullable:             value.Nullable,
 		Format:               value.Format,
 		Title:                value.Title,
 		Description:          value.Description,
@@ -879,7 +882,7 @@ type OperationTrait struct {
 	Summary      string                     `json:"summary,omitempty"`
 	Description  string                     `json:"description,omitempty"`
 	Tags         []*Tag                     `json:"tags,omitempty"`
-	ExternalDocs json.RawMessage            `json:"externalDocs,omitempty"`
+	ExternalDocs *ExternalDocs              `json:"externalDocs,omitempty"`
 	OperationId  string                     `json:"operationId,omitempty"`
 	ProtocolInfo json.RawMessage            `json:"protocolInfo,omitempty"`
 }
@@ -938,7 +941,7 @@ type MessageTrait struct {
 	Name          string                     `json:"name,omitempty"`
 	Title         string                     `json:"title,omitempty"`
 	Description   string                     `json:"description,omitempty"`
-	ExternalDocs  json.RawMessage            `json:"externalDocs,omitempty"`
+	ExternalDocs  *ExternalDocs              `json:"externalDocs,omitempty"`
 	Deprecated    bool                       `json:"deprecated,omitempty"`
 	Examples      []json.RawMessage          `json:"examples,omitempty"`
 	ProtocolInfo  json.RawMessage            `json:"protocolInfo,omitempty"`

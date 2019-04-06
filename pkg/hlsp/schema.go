@@ -29,7 +29,7 @@ func getSchema() []byte {
     "id": {
       "type": "string",
       "description": "A unique id representing the application.",
-      "format": "uri-reference"
+      "format": "uri"
     },
     "info": {
       "$ref": "#/definitions/info"
@@ -337,6 +337,10 @@ func getSchema() []byte {
       "properties": {
         "$ref": {
           "$ref": "#/definitions/ReferenceObject"
+        },
+        "nullable": {
+          "type": "boolean",
+          "default": false
         },
         "format": {
           "type": "string"
@@ -916,14 +920,7 @@ func getSchema() []byte {
           "uniqueItems": true
         },
         "externalDocs": {
-          "$allOf": [
-            {
-              "$ref": "#/definitions/externalDocs"
-            },
-            {
-              "format": "uri-template"
-            }
-          ]
+          "$ref": "#/definitions/externalDocs"
         },
         "operationId": {
           "type": "string"
@@ -998,14 +995,7 @@ func getSchema() []byte {
           "description": "A longer description of the message. CommonMark is allowed."
         },
         "externalDocs": {
-          "$allOf": [
-            {
-              "$ref": "#/definitions/externalDocs"
-            },
-            {
-              "format": "uri-template"
-            }
-          ]
+          "$ref": "#/definitions/externalDocs"
         },
         "deprecated": {
           "type": "boolean",
