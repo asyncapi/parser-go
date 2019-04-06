@@ -9,7 +9,7 @@ import (
 
 func TestParse(t *testing.T) {
 	asyncapi := []byte(`
-asyncapi: '2.0.0'
+asyncapi: '2.0.0-rc1'
 id: myapi
 info:
   title: My API
@@ -18,7 +18,7 @@ channels: {}`)
 
 	doc, err := Parse(asyncapi)
 	assert.Assert(t, is.Nil(err))
-	assert.Equal(t, doc.Asyncapi, "2.0.0")
+	assert.Equal(t, doc.Asyncapi, "2.0.0-rc1")
 	assert.Equal(t, doc.Id, "myapi")
 }
 func TestParseWithEmptyYAML(t *testing.T) {
@@ -30,7 +30,7 @@ func TestParseWithEmptyYAML(t *testing.T) {
 }
 func TestParseWithInvalidDocument(t *testing.T) {
 	asyncapi := []byte(`
-asyncapi: '2.0.0'
+asyncapi: '2.0.0-rc1'
 info:
   title: My API
   version: '1.0.0'
@@ -44,7 +44,7 @@ channels: {}`)
 
 func TestParseJSON(t *testing.T) {
 	asyncapi := []byte(`{
-		"asyncapi": "2.0.0",
+		"asyncapi": "2.0.0-rc1",
 		"id": "myapi",
 		"info": {
 			"title": "My API",
@@ -56,7 +56,7 @@ func TestParseJSON(t *testing.T) {
 	jsonDocument, err := ParseJSON(asyncapi)
 	assert.Assert(t, is.Nil(err))
 	assert.Equal(t, string(jsonDocument), `{
-		"asyncapi": "2.0.0",
+		"asyncapi": "2.0.0-rc1",
 		"id": "myapi",
 		"info": {
 			"title": "My API",
@@ -86,7 +86,7 @@ func TestParseJSONWithEmptyJSON(t *testing.T) {
 
 func TestParseJSONWithInvalidDocument(t *testing.T) {
 	asyncapi := []byte(`{
-		"asyncapi": "2.0.0",
+		"asyncapi": "2.0.0-rc1",
 		"info": {
 			"title": "My API",
 			"version": "1.0.0"
@@ -99,7 +99,7 @@ func TestParseJSONWithInvalidDocument(t *testing.T) {
 	assert.Equal(t, len(err.ParsingErrors), 1)
 	assert.Equal(t, err.ParsingErrors[0].Details()["property"], "id")
 	assert.Equal(t, string(jsonDocument), `{
-		"asyncapi": "2.0.0",
+		"asyncapi": "2.0.0-rc1",
 		"info": {
 			"title": "My API",
 			"version": "1.0.0"

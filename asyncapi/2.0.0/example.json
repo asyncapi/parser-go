@@ -1,5 +1,5 @@
 {
-    "asyncapi": "2.0.0",
+    "asyncapi": "2.0.0-rc1",
     "id": "urn:com:smartylighting:streetlights:server",
     "x-something": {
         "keise": true
@@ -16,7 +16,7 @@
     "servers": [
         {
             "url": "api.streetlights.smartylighting.com:{port}",
-            "scheme": "mqtt",
+            "protocol": "mqtt",
             "description": "Test broker",
             "baseChannel": "smartylighting/streetlights/1/0",
             "variables": {
@@ -51,150 +51,205 @@
         "event/{streetlightId}/lighting/measured": {
             "parameters": [
                 {
-                    "name": "streetlightId",
-                    "description": "The ID of the streetlight.",
-                    "schema": {
-                        "type": "string"
-                    }
+                    "$ref": "#/components/parameters/streetlightId"
                 }
             ],
             "subscribe": {
                 "summary": "Receive information about environmental lighting conditions of a particular streetlight.",
                 "operationId": "receiveLightMeasurement",
-                "message": {
-                    "name": "lightMeasured",
-                    "title": "Light measured",
-                    "summary": "Inform about environmental lighting conditions for a particular streetlight.",
-                    "contentType": "application/json",
-                    "payload": {
-                        "type": "object",
-                        "properties": {
-                            "lumens": {
-                                "type": "integer",
-                                "minimum": 0,
-                                "description": "Light intensity measured in lumens."
-                            },
-                            "sentAt": {
-                                "type": "string",
-                                "format": "date-time",
-                                "description": "Date and time when the message was sent."
-                            }
+                "traits": [
+                    [
+                        {
+                            "$ref": "#/components/traits/docs"
+                        },
+                        {
+                            "headerId": "lighting-measured"
                         }
-                    }
+                    ]
+                ],
+                "message": {
+                    "$ref": "#/components/messages/lightMeasured"
                 }
             }
         },
         "action/{streetlightId}/turn/on": {
             "parameters": [
                 {
-                    "name": "streetlightId",
-                    "description": "The ID of the streetlight.",
-                    "schema": {
-                        "type": "string"
-                    }
+                    "$ref": "#/components/parameters/streetlightId"
                 }
             ],
             "publish": {
                 "operationId": "turnOn",
-                "message": {
-                    "name": "turnOnOff",
-                    "title": "Turn on/off",
-                    "summary": "Command a particular streetlight to turn the lights on or off.",
-                    "payload": {
-                        "type": "object",
-                        "properties": {
-                            "command": {
-                                "type": "string",
-                                "enum": [
-                                    "on",
-                                    "off"
-                                ],
-                                "description": "Whether to turn on or off the light."
-                            },
-                            "sentAt": {
-                                "type": "string",
-                                "format": "date-time",
-                                "description": "Date and time when the message was sent."
-                            }
+                "traits": [
+                    [
+                        {
+                            "$ref": "#/components/traits/docs"
+                        },
+                        {
+                            "headerId": "turn-on"
                         }
-                    }
+                    ]
+                ],
+                "message": {
+                    "$ref": "#/components/messages/turnOnOff"
                 }
             }
         },
         "action/{streetlightId}/turn/off": {
             "parameters": [
                 {
-                    "name": "streetlightId",
-                    "description": "The ID of the streetlight.",
-                    "schema": {
-                        "type": "string"
-                    }
+                    "$ref": "#/components/parameters/streetlightId"
                 }
             ],
             "publish": {
                 "operationId": "turnOff",
-                "message": {
-                    "name": "turnOnOff",
-                    "title": "Turn on/off",
-                    "summary": "Command a particular streetlight to turn the lights on or off.",
-                    "payload": {
-                        "type": "object",
-                        "properties": {
-                            "command": {
-                                "type": "string",
-                                "enum": [
-                                    "on",
-                                    "off"
-                                ],
-                                "description": "Whether to turn on or off the light."
-                            },
-                            "sentAt": {
-                                "type": "string",
-                                "format": "date-time",
-                                "description": "Date and time when the message was sent."
-                            }
+                "traits": [
+                    [
+                        {
+                            "$ref": "#/components/traits/docs"
+                        },
+                        {
+                            "headerId": "turn-off"
                         }
-                    }
+                    ]
+                ],
+                "message": {
+                    "$ref": "#/components/messages/turnOnOff"
                 }
             }
         },
         "action/{streetlightId}/dim": {
             "parameters": [
                 {
-                    "name": "streetlightId",
-                    "description": "The ID of the streetlight.",
-                    "schema": {
-                        "type": "string"
-                    }
+                    "$ref": "#/components/parameters/streetlightId"
                 }
             ],
             "publish": {
                 "operationId": "dimLight",
-                "message": {
-                    "name": "dimLight",
-                    "title": "Dim light",
-                    "summary": "Command a particular streetlight to dim the lights.",
-                    "payload": {
-                        "type": "object",
-                        "properties": {
-                            "percentage": {
-                                "type": "integer",
-                                "description": "Percentage to which the light should be dimmed to.",
-                                "minimum": 0,
-                                "maximum": 100
-                            },
-                            "sentAt": {
-                                "type": "string",
-                                "format": "date-time",
-                                "description": "Date and time when the message was sent."
-                            }
+                "traits": [
+                    [
+                        {
+                            "$ref": "#/components/traits/docs"
+                        },
+                        {
+                            "headerId": "dim"
                         }
-                    }
+                    ]
+                ],
+                "message": {
+                    "$ref": "#/components/messages/dimLight"
                 }
             }
         }
     },
     "components": {
+        "messages": {
+            "lightMeasured": {
+                "name": "lightMeasured",
+                "title": "Light measured",
+                "summary": "Inform about environmental lighting conditions for a particular streetlight.",
+                "contentType": "application/json",
+                "traits": [
+                    [
+                        {
+                            "$ref": "#/components/traits/docs"
+                        },
+                        {
+                            "headerId": "message-light-measured"
+                        }
+                    ]
+                ],
+                "payload": {
+                    "$ref": "#/components/schemas/lightMeasuredPayload"
+                }
+            },
+            "turnOnOff": {
+                "name": "turnOnOff",
+                "title": "Turn on/off",
+                "summary": "Command a particular streetlight to turn the lights on or off.",
+                "traits": [
+                    [
+                        {
+                            "$ref": "#/components/traits/docs"
+                        },
+                        {
+                            "headerId": "message-turn-on-off"
+                        }
+                    ]
+                ],
+                "payload": {
+                    "$ref": "#/components/schemas/turnOnOffPayload"
+                }
+            },
+            "dimLight": {
+                "name": "dimLight",
+                "title": "Dim light",
+                "summary": "Command a particular streetlight to dim the lights.",
+                "traits": [
+                    [
+                        {
+                            "$ref": "#/components/traits/docs"
+                        },
+                        {
+                            "headerId": "message-dim-light"
+                        }
+                    ]
+                ],
+                "payload": {
+                    "$ref": "#/components/schemas/dimLightPayload"
+                }
+            }
+        },
+        "schemas": {
+            "lightMeasuredPayload": {
+                "type": "object",
+                "properties": {
+                    "lumens": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Light intensity measured in lumens."
+                    },
+                    "sentAt": {
+                        "$ref": "#/components/schemas/sentAt"
+                    }
+                }
+            },
+            "turnOnOffPayload": {
+                "type": "object",
+                "properties": {
+                    "command": {
+                        "type": "string",
+                        "enum": [
+                            true,
+                            false
+                        ],
+                        "description": "Whether to turn on or off the light."
+                    },
+                    "sentAt": {
+                        "$ref": "#/components/schemas/sentAt"
+                    }
+                }
+            },
+            "dimLightPayload": {
+                "type": "object",
+                "properties": {
+                    "percentage": {
+                        "type": "integer",
+                        "description": "Percentage to which the light should be dimmed to.",
+                        "minimum": 0,
+                        "maximum": 100
+                    },
+                    "sentAt": {
+                        "$ref": "#/components/schemas/sentAt"
+                    }
+                }
+            },
+            "sentAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Date and time when the message was sent."
+            }
+        },
         "securitySchemes": {
             "apiKey": {
                 "type": "apiKey",
@@ -244,6 +299,22 @@
             "openIdConnectWellKnown": {
                 "type": "openIdConnect",
                 "openIdConnectUrl": "https://authserver.example/.well-known"
+            }
+        },
+        "parameters": {
+            "streetlightId": {
+                "name": "streetlightId",
+                "description": "The ID of the streetlight.",
+                "schema": {
+                    "type": "string"
+                }
+            }
+        },
+        "traits": {
+            "docs": {
+                "externalDocs": {
+                    "url": "https://company.com/docs#{{headerId}}"
+                }
             }
         }
     }

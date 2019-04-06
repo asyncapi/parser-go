@@ -95,31 +95,7 @@ func (value Reference) MarshalJSON() ([]byte, error) {
 	return jsonByteArray, nil
 }
 
-// ReferenceObject maps AsyncAPI "ReferenceObject" object
-type ReferenceObject struct {
-}
-
-// UnmarshalJSON unmarshals JSON
-func (value *ReferenceObject) UnmarshalJSON(data []byte) error {
-	type ReferenceObjectAlias ReferenceObject
-	jsonMap := ReferenceObjectAlias{}
-	var err error
-	if err = json.Unmarshal(data, &jsonMap); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// MarshalJSON marshals JSON
-func (value ReferenceObject) MarshalJSON() ([]byte, error) {
-	type ReferenceObjectAlias ReferenceObject
-	jsonByteArray, err := json.Marshal(&ReferenceObjectAlias{})
-	if err != nil {
-		return nil, err
-	}
-	return jsonByteArray, nil
-}
+type ReferenceObject string
 
 // Info maps AsyncAPI "info" object
 type Info struct {
@@ -806,89 +782,6 @@ func (value Operation) MarshalJSON() ([]byte, error) {
 	return MergeExtensions(jsonByteArray, value.Extensions)
 }
 
-// Message maps AsyncAPI "message" object
-type Message struct {
-	Extensions    map[string]json.RawMessage `json:"-"`
-	OneOf         []*Message                 `json:"oneOf,omitempty"`
-	SchemaFormat  string                     `json:"schemaFormat,omitempty"`
-	ContentType   string                     `json:"contentType,omitempty"`
-	Headers       json.RawMessage            `json:"headers,omitempty"`
-	Payload       json.RawMessage            `json:"payload,omitempty"`
-	CorrelationId json.RawMessage            `json:"correlationId,omitempty"`
-	Tags          []*Tag                     `json:"tags,omitempty"`
-	Summary       string                     `json:"summary,omitempty"`
-	Name          string                     `json:"name,omitempty"`
-	Title         string                     `json:"title,omitempty"`
-	Description   string                     `json:"description,omitempty"`
-	ExternalDocs  *ExternalDocs              `json:"externalDocs,omitempty"`
-	Deprecated    bool                       `json:"deprecated,omitempty"`
-	Examples      []json.RawMessage          `json:"examples,omitempty"`
-	ProtocolInfo  json.RawMessage            `json:"protocolInfo,omitempty"`
-	Traits        []json.RawMessage          `json:"traits,omitempty"`
-}
-
-// UnmarshalJSON unmarshals JSON
-func (value *Message) UnmarshalJSON(data []byte) error {
-	type MessageAlias Message
-	jsonMap := MessageAlias{}
-	var err error
-	if err = json.Unmarshal(data, &jsonMap); err != nil {
-		return err
-	}
-
-	value.OneOf = jsonMap.OneOf
-	value.SchemaFormat = jsonMap.SchemaFormat
-	value.ContentType = jsonMap.ContentType
-	value.Headers = jsonMap.Headers
-	value.Payload = jsonMap.Payload
-	value.CorrelationId = jsonMap.CorrelationId
-	value.Tags = jsonMap.Tags
-	value.Summary = jsonMap.Summary
-	value.Name = jsonMap.Name
-	value.Title = jsonMap.Title
-	value.Description = jsonMap.Description
-	value.ExternalDocs = jsonMap.ExternalDocs
-	value.Deprecated = jsonMap.Deprecated
-	value.Examples = jsonMap.Examples
-	value.ProtocolInfo = jsonMap.ProtocolInfo
-	value.Traits = jsonMap.Traits
-
-	exts, err := ExtensionsFromJSON(data)
-	if err != nil {
-		return err
-	}
-	value.Extensions = exts
-
-	return nil
-}
-
-// MarshalJSON marshals JSON
-func (value Message) MarshalJSON() ([]byte, error) {
-	type MessageAlias Message
-	jsonByteArray, err := json.Marshal(&MessageAlias{
-		OneOf:         value.OneOf,
-		SchemaFormat:  value.SchemaFormat,
-		ContentType:   value.ContentType,
-		Headers:       value.Headers,
-		Payload:       value.Payload,
-		CorrelationId: value.CorrelationId,
-		Tags:          value.Tags,
-		Summary:       value.Summary,
-		Name:          value.Name,
-		Title:         value.Title,
-		Description:   value.Description,
-		ExternalDocs:  value.ExternalDocs,
-		Deprecated:    value.Deprecated,
-		Examples:      value.Examples,
-		ProtocolInfo:  value.ProtocolInfo,
-		Traits:        value.Traits,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return MergeExtensions(jsonByteArray, value.Extensions)
-}
-
 // CorrelationId maps AsyncAPI "correlationId" object
 type CorrelationId struct {
 	Extensions  map[string]json.RawMessage `json:"-"`
@@ -986,7 +879,7 @@ type OperationTrait struct {
 	Summary      string                     `json:"summary,omitempty"`
 	Description  string                     `json:"description,omitempty"`
 	Tags         []*Tag                     `json:"tags,omitempty"`
-	ExternalDocs *ExternalDocs              `json:"externalDocs,omitempty"`
+	ExternalDocs json.RawMessage            `json:"externalDocs,omitempty"`
 	OperationId  string                     `json:"operationId,omitempty"`
 	ProtocolInfo json.RawMessage            `json:"protocolInfo,omitempty"`
 }
@@ -1045,7 +938,7 @@ type MessageTrait struct {
 	Name          string                     `json:"name,omitempty"`
 	Title         string                     `json:"title,omitempty"`
 	Description   string                     `json:"description,omitempty"`
-	ExternalDocs  *ExternalDocs              `json:"externalDocs,omitempty"`
+	ExternalDocs  json.RawMessage            `json:"externalDocs,omitempty"`
 	Deprecated    bool                       `json:"deprecated,omitempty"`
 	Examples      []json.RawMessage          `json:"examples,omitempty"`
 	ProtocolInfo  json.RawMessage            `json:"protocolInfo,omitempty"`
