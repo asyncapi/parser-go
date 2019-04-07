@@ -10,13 +10,14 @@ import "C"
 import (
 	"unsafe"
 
+	"github.com/asyncapi/parser/pkg/errs"
 	"github.com/asyncapi/parser/pkg/hlsp"
 )
 
 //Parse is the C-friendly version of the parser.Parse method.
 //export Parse
 func Parse(yamlOrJSONDocument string) C._ParseResult_ {
-	jsonDoc, err := hlsp.Parse([]byte(yamlOrJSONDocument))
+	jsonDoc, err := hlsp.ParseForC([]byte(yamlOrJSONDocument))
 
 	if err != nil {
 		ea, count := makeCErrorArray(err)
@@ -36,7 +37,7 @@ func Parse(yamlOrJSONDocument string) C._ParseResult_ {
 	}
 }
 
-func makeCErrorArray(err *hlsp.ParserError) (**C.char, C.int) {
+func makeCErrorArray(err *errs.ParserError) (**C.char, C.int) {
 	var arr []string
 	arr = append(arr, err.Error())
 	if err.ParsingErrors != nil {

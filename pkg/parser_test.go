@@ -3,14 +3,15 @@ package parser
 import (
 	"fmt"
 	"testing"
-	is "gotest.tools/assert/cmp"
+
 	"gotest.tools/assert"
+	is "gotest.tools/assert/cmp"
 )
 
 func TestParse(t *testing.T) {
 	asyncapi := []byte(`
-asyncapi: '2.0.0'
-id: myapi
+asyncapi: '2.0.0-rc1'
+id: 'urn:myapi'
 info:
   title: My API
   version: '1.0.0'
