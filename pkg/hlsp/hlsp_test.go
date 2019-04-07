@@ -10,7 +10,7 @@ import (
 func TestParse(t *testing.T) {
 	asyncapi := []byte(`
 asyncapi: '2.0.0-rc1'
-id: myapi
+id: 'urn:myapi'
 info:
   title: My API
   version: '1.0.0'
@@ -19,7 +19,7 @@ channels: {}`)
 	doc, err := Parse(asyncapi)
 	assert.Assert(t, is.Nil(err))
 	assert.Equal(t, doc.Asyncapi, "2.0.0-rc1")
-	assert.Equal(t, doc.Id, "myapi")
+	assert.Equal(t, doc.Id, "urn:myapi")
 }
 func TestParseWithEmptyYAML(t *testing.T) {
 	asyncapi := []byte(``)
@@ -45,7 +45,7 @@ channels: {}`)
 func TestParseJSON(t *testing.T) {
 	asyncapi := []byte(`{
 		"asyncapi": "2.0.0-rc1",
-		"id": "myapi",
+		"id": "urn:myapi",
 		"info": {
 			"title": "My API",
 			"version": "1.0.0"
@@ -57,7 +57,7 @@ func TestParseJSON(t *testing.T) {
 	assert.Assert(t, is.Nil(err))
 	assert.Equal(t, string(jsonDocument), `{
 		"asyncapi": "2.0.0-rc1",
-		"id": "myapi",
+		"id": "urn:myapi",
 		"info": {
 			"title": "My API",
 			"version": "1.0.0"

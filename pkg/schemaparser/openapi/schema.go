@@ -1,6 +1,6 @@
-package schemaparser
+package openapi
 
-func (v OpenAPI) getSchema() []byte {
+func getSchema() []byte {
 	return []byte(`
 {
     "title": "OpenAPI/AsyncAPI schema.",

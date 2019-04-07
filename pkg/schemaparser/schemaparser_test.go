@@ -11,7 +11,7 @@ import (
 func TestParse(t *testing.T) {
 	asyncapi := []byte(`{
 		"asyncapi": "2.0.0-rc1",
-		"id": "myapi",
+		"id": "urn:myapi",
 		"info": {
 			"title": "My API",
 			"version": "1.0.0"

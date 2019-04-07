@@ -5,6 +5,7 @@ import (
 
 	"github.com/asyncapi/parser/pkg/errs"
 	"github.com/asyncapi/parser/pkg/models"
+	"github.com/asyncapi/parser/pkg/schemaparser/openapi"
 )
 
 type SchemaParser interface {
@@ -51,16 +52,9 @@ func parseMessage(message *models.Message) *errs.ParserError {
 		return nil
 	}
 
-	j, err := message.Payload.MarshalJSON()
-	if err != nil {
-		return &errs.ParserError{
-			ErrorMessage: err.Error(),
-		}
-	}
-
 	switch message.SchemaFormat {
 	case "", "openapi", "asyncapi", "application/vnd.oai.openapi", "application/vnd.asyncapi":
-		return OpenAPI{}.Parse(j)
+		return openapi.OpenAPI{}.Parse(message)
 	}
 
 	return nil

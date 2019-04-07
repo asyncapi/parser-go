@@ -14,3 +14,18 @@ type ParserError struct {
 func (v *ParserError) Error() string {
 	return v.ErrorMessage
 }
+
+// New creates a new ParserError with the given message.
+func New(msg string) *ParserError {
+	return &ParserError{
+		ErrorMessage: msg,
+	}
+}
+
+// NewWithParsingErrors creates a new ParserError with the given message and parsing errors.
+func NewWithParsingErrors(msg string, parsingErrors []gojsonschema.ResultError) *ParserError {
+	return &ParserError{
+		ErrorMessage:  msg,
+		ParsingErrors: parsingErrors,
+	}
+}
