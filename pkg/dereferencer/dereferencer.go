@@ -1,7 +1,7 @@
 package dereferencer
 
 import (
-	"github.com/xeipuuv/gojsonschema"
+    "github.com/xeipuuv/gojsonschema"
 	"io/ioutil"
 	"log"
 	"strings"
@@ -54,11 +54,18 @@ func Dereference(document []byte) (resolvedDoc []byte, err error){
         fmt.Printf("key[%s]\n", k)
         eachJSONValue(&v, func(key *string, index *int, value *interface{}) {
             if key != nil { // It's an object key/value pair...
-                //fmt.Printf("OBJ: key=%q, value=%#v\n", *key, *value)
+                // fmt.Printf("OBJ: key=%q, value=%#v\n", *key, *value)
                 if *key == "$ref" {
                     if  strings.HasPrefix((*value).(string), inFileRef){
-                        fmt.Printf("inFileRef %s", (*value).(string))
-                        err = fDef.Dereference((*value).(string), document)
+                        dv, err := fDef.Dereference((*value).(string), document)
+                        if err != nil {
+                            fmt.Printf("Error dereferencing %s", (*value).(string))
+                            log.Fatal(err)
+                        }
+                        fmt.Printf("inFileRef %s: resolved to %s\n", (*value).(string), dv)
+                        // TODO: Substitute obj for dereferencedValue(dv)
+                        // or use this dvs to generate another document 
+                        //objmap[k] = dv
                     } else if strings.HasPrefix((*value).(string), httpRef){
                         fmt.Printf("httpRef %s", (*value).(string))
                         err = httpDef.Dereference((*value).(string), document)
@@ -68,11 +75,22 @@ func Dereference(document []byte) (resolvedDoc []byte, err error){
                             fmt.Printf("can't detect which reference are you using for %s", (*value).(string))
                             log.Fatal(err)
                         }
-                        err = fDef.Dereference((*value).(string), fileData)
+                        dv, err := fDef.Dereference((*value).(string), fileData)
+                        if err != nil {
+                            fmt.Printf("Error dereferencing %s", (*value).(string))
+                            log.Fatal(err)
+                        }
+                        fmt.Printf("inFileRef %s: resolved to %s\n", (*value).(string), dv)
                     }
                 }
             }
         })
+    }
+    resolvedDoc, err = json.Marshal(objmap)
+    // fmt.Printf("ObjMap %s \n\n", string(resolvedDoc))
+
+    if err != nil {
+        fmt.Printf("Can't Marshall resolved document %s \n", err)
     }
     return resolvedDoc, nil
 }
