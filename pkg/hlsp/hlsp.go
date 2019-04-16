@@ -1,6 +1,7 @@
 package hlsp
 
 import (
+	"github.com/asyncapi/parser/pkg/dereferencer"
 	"encoding/json"
 
 	"github.com/asyncapi/parser/pkg/models"
@@ -66,6 +67,7 @@ func ParseJSON(jsonDocument []byte) (json.RawMessage, *errs.ParserError) {
 	}
 
 	if result.Valid() {
+		jsonDocument, err = dereferencer.Dereference(jsonDocument)
 		return jsonDocument, nil
 	}
 
