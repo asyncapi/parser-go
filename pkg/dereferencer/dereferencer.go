@@ -70,17 +70,22 @@ func Dereference(document []byte) (resolvedDoc []byte, err error){
                         fmt.Printf("httpRef %s", (*value).(string))
                         err = httpDef.Dereference((*value).(string), document)
                     } else {
-                        fileData, err := checkFile((*value).(string))
+                        fileData, ref, err := checkFile((*value).(string))
                         if err != nil {
                             fmt.Printf("can't detect which reference are you using for %s", (*value).(string))
                             log.Fatal(err)
                         }
-                        dv, err := fDef.Dereference((*value).(string), fileData)
+                        var dv []byte
+                        if ref == "" {
+                            dv, err = fDef.Dereference((*value).(string), fileData)
+                        }else {
+                            dv, err = fDef.Dereference(ref, fileData)
+                        }
                         if err != nil {
                             fmt.Printf("Error dereferencing %s", (*value).(string))
                             log.Fatal(err)
                         }
-                        fmt.Printf("inFileRef %s: resolved to %s\n", (*value).(string), dv)
+                        fmt.Printf("externalFileRef %s: resolved to %s\n", (*value).(string), dv)
                     }
                 }
             }
@@ -95,14 +100,17 @@ func Dereference(document []byte) (resolvedDoc []byte, err error){
     return resolvedDoc, nil
 }
 
-func checkFile(filename string) (fileData []byte, err error) {
-    fileData, err = ioutil.ReadFile(filename)
-    fmt.Printf("externalFileRef %s", filename)
+func checkFile(filename string) (fileData []byte, ref string, err error) {
+    paths := strings.Split(filename, "#")
+    fileData, err = ioutil.ReadFile(paths[0])
+    // fmt.Printf("externalFileRef %s", paths[0])
     schemaLoader := gojsonschema.NewBytesLoader(fileData)
     documentLoader := gojsonschema.NewBytesLoader(fileData)
     result, err := gojsonschema.Validate(schemaLoader, documentLoader)
+    
     if result.Valid() {
-		return fileData, nil
+		return fileData, paths[1], nil
     }
-    return nil, err
+    
+    return nil,paths[1], err
 }
