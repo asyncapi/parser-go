@@ -8,8 +8,7 @@ import (
 )
 
 const (
-  refInFile = `
-channels:
+  refInFile = `channels:
 event/{streetlightId}/lighting/measured:
   parameters:
     - $ref: '#/components/parameters/streetlightId'
@@ -22,20 +21,9 @@ components:
       name: streetlightId
       description: The ID of the streetlight.
       schema:
-      type: string
-`
-  expectedResolved = `
-channels:
-event/{streetlightId}/lighting/measured:
-  parameters:
-    - name: streetlightId
-      description: The ID of the streetlight.
-      schema:
-      type: string
-  subscribe:
-    summary: Receive information about environmental lighting conditions of a particular streetlight.
-    operationId: receiveLightMeasurement
-`
+      type: string`
+
+  expectedResolved = `[{"description":"The ID of the streetlight.","name":"streetlightId","schema":null,"type":"string"}]`
 )
 
 func TestDereferenceInFile(t *testing.T) {
@@ -43,6 +31,5 @@ func TestDereferenceInFile(t *testing.T) {
   assert.NoError(t, err, "error converting yaml to json")
   resolvedDoc, err := Dereference(jsonDocument)
   assert.NoError(t, err, "error Dereferencing")
-  resolvedYaml, err := yaml.JSONToYAML(resolvedDoc)
-  assert.Equal(t, expectedResolved, string(resolvedYaml), "No equal")
+  assert.Contains(t, string(resolvedDoc), expectedResolved, "does not contain resolved $ref")
 }
