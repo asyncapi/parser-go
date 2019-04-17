@@ -96,7 +96,7 @@ func Dereference(document []byte) (resolvedDoc []byte, err error){
     }
     // Replace strings for its references
     for k, v := range replacements {
-        key := fmt.Sprintf("\"$ref\":\"%s\"", k)
+        key := fmt.Sprintf("{\"$ref\":\"%s\"}", k)
         find := []byte(key) 
         document = bytes.Replace(document, find, v.([]byte), -1)
     }
