@@ -1,6 +1,7 @@
 package dereferencer
 
 import (
+	"bytes"
     "github.com/xeipuuv/gojsonschema"
 	"io/ioutil"
 	"log"
@@ -50,11 +51,12 @@ func Dereference(document []byte) (resolvedDoc []byte, err error){
     }
     fDef := fileDereferencer{}
     httpDef := httpDereferencer{}
-    for k, v := range objmap { 
-        fmt.Printf("key[%s]\n", k)
+    var replacements = make(map[string]interface{})
+    for _, v := range objmap { 
+        //fmt.Printf("key[%s]\n", k)
         eachJSONValue(&v, func(key *string, index *int, value *interface{}) {
             if key != nil { // It's an object key/value pair...
-                // fmt.Printf("OBJ: key=%q, value=%#v\n", *key, *value)
+                // fmt.Printf("OBJ: key=%q, value=%v\n", *key, *value)
                 if *key == "$ref" {
                     if  strings.HasPrefix((*value).(string), inFileRef){
                         dv, err := fDef.Dereference((*value).(string), document)
@@ -62,10 +64,10 @@ func Dereference(document []byte) (resolvedDoc []byte, err error){
                             fmt.Printf("Error dereferencing %s", (*value).(string))
                             log.Fatal(err)
                         }
-                        fmt.Printf("inFileRef %s: resolved to %s\n", (*value).(string), dv)
+                        fmt.Printf("inFileRef %s: resolved to %s\n",(*value).(string), dv)
                         // TODO: Substitute obj for dereferencedValue(dv)
                         // or use this dvs to generate another document 
-                        //objmap[k] = dv
+                        replacements[(*value).(string)] = dv
                     } else if strings.HasPrefix((*value).(string), httpRef){
                         fmt.Printf("httpRef %s", (*value).(string))
                         err = httpDef.Dereference((*value).(string), document)
@@ -90,13 +92,16 @@ func Dereference(document []byte) (resolvedDoc []byte, err error){
                 }
             }
         })
-    }
-    resolvedDoc, err = json.Marshal(objmap)
-    // fmt.Printf("ObjMap %s \n\n", string(resolvedDoc))
 
-    if err != nil {
-        fmt.Printf("Can't Marshall resolved document %s \n", err)
     }
+    // Replace strings for its references
+    for k, v := range replacements {
+        key := fmt.Sprintf("\"$ref\":\"%s\"", k)
+        find := []byte(key) 
+        document = bytes.Replace(document, find, v.([]byte), -1)
+    }
+    fmt.Printf("ObjMap %s \n\n", string(document))
+    resolvedDoc = document
     return resolvedDoc, nil
 }
 
