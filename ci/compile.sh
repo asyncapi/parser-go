@@ -14,7 +14,7 @@ if [[ $TRAVIS_COMMIT_MESSAGE == *"[compile]"* ]]; then
   git add bin
   git commit -m "[skip ci] Travis: Add $TRAVIS_OS_NAME binaries."
   git remote add origin-ci https://${GH_TOKEN}@github.com/asyncapi/parser.git
-  git pull # To decrease the chances of having conflicts with other compilation processes.
+  git pull # This is to decrease the chances of having conflicts with other compilation processes.
   git push --set-upstream origin-ci $TRAVIS_BRANCH
 else
   echo 'Skipping compilation. To trigger the compilation script push a git commit containing the string "[compile]" in the message.'
