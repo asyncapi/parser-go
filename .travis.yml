@@ -1,0 +1,11 @@
+os:
+  - windows
+  # - linux
+  # - osx
+
+language: go
+go:
+  - 1.12.x
+
+script:
+  - ./ci/compile.sh
