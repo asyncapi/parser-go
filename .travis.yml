@@ -1,7 +1,7 @@
 os:
   - windows
-  # - linux
-  # - osx
+  - linux
+  - osx
 
 language: go
 go:
