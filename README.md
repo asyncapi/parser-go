@@ -16,24 +16,71 @@ This will output the parsed definition in json format or error in case of invali
 
 ## Compiling
 
-We use [xgo](https://github.com/karalabe/xgo) to compile for multiple platforms.
+If you want to compile the code to a C shared library, you have 2 ways:
 
-### Installing xgo
+### Automatic (recommended)
 
-```bash
-docker pull karalabe/xgo-latest
-go get github.com/karalabe/xgo
+Git commit with a message containing the string "[compile]". If you have nothing to commit but still want to trigger the compilation process, you can create an empty commit:
+
+```
+git commit --allow-empty -m '[compile]'
 ```
 
-If you want to know more about the installation process, check out [xgo documentation](https://github.com/karalabe/xgo#installation).
+Go to Travis CI website to [see the status of your compilation process](https://travis-ci.org/asyncapi/parser/builds).
 
-### Running compilation script
+If there are changes in the binaries, Travis will push them to your branch. Beware it will push a commit for each platform (Windows, Mac, Linux).
 
-```bash
-./compile.sh
+### Manual
+
+Compiling to C is rather trivial but you have to make sure you install everything you'll need. Check out the requirements for each platform:
+
+#### Windows
+
+Install Windows Build Tools (Node.js required):
+
+```
+npm install --global windows-build-tools
 ```
 
-Resulting binaries and `.h` files will be placed in the `bin` directory of the project.
+This should install Visual C++ Build Tools and Python.
+
+And then run:
+
+```
+compile-windows
+```
+
+#### Mac OS X
+
+Install Xcode Command Line Tools:
+
+```
+xcode-select --install
+```
+
+And then run:
+
+```
+./compile-darwin.sh
+```
+
+#### Linux
+
+Install GCC:
+
+```
+sudo apt install gcc
+```
+
+```
+sudo apt install build-essential
+```
+
+And then run:
+
+```
+./compile-linux.sh
+```
 
 ## Authors
 
