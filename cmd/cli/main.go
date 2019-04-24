@@ -31,7 +31,7 @@ func main() {
 	}
 	jOut, err := json.MarshalIndent(p, "", "  ")
 	fmt.Printf("Definition %d", len(jOut))
-	// fmt.Printf("Definition %s", string(jOut))
+	fmt.Printf("Definition %s", string(jOut))
 }
 
 func handleError(err error, msg string) {

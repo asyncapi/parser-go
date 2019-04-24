@@ -49,9 +49,45 @@ func Dereference(document []byte) (resolvedDoc []byte, err error){
     if err != nil {
         return nil, err
     }
+    var replacements = make(map[string]interface{})
+    replacements, err = resolve(objmap, document)
+    if err != nil {
+        return nil, err
+    }
+    // Replace strings for its references
+    // hardcoded value: 10 loops to resolve $ref inside $refs. 
+    for i := 1; i <= 10; i++ {
+        for k, v := range replacements {
+            key := fmt.Sprintf("{\"$ref\":\"%s\"}", k)
+            find := []byte(key) 
+            document = bytes.Replace(document, find, v.([]byte), -1)
+        }
+    }
+
+    // fmt.Printf("ObjMap %s \n\n", string(document))
+    resolvedDoc = document
+    return resolvedDoc, nil
+}
+
+func checkFile(filename string) (fileData []byte, ref string, err error) {
+    paths := strings.Split(filename, "#")
+    fileData, err = ioutil.ReadFile(paths[0])
+    // fmt.Printf("externalFileRef %s", paths[0])
+    schemaLoader := gojsonschema.NewBytesLoader(fileData)
+    documentLoader := gojsonschema.NewBytesLoader(fileData)
+    result, err := gojsonschema.Validate(schemaLoader, documentLoader)
+    
+    if result.Valid() {
+		return fileData, paths[1], nil
+    }
+    
+    return nil,paths[1], err
+}
+
+func resolve(objmap map[string]interface{}, document []byte) (replacements  map[string]interface{}, err error) {
+    replacements = make(map[string]interface{})
     fDef := fileDereferencer{}
     httpDef := httpDereferencer{}
-    var replacements = make(map[string]interface{})
     for _, v := range objmap { 
         //fmt.Printf("key[%s]\n", k)
         eachJSONValue(&v, func(key *string, index *int, value *interface{}) {
@@ -64,13 +100,14 @@ func Dereference(document []byte) (resolvedDoc []byte, err error){
                             fmt.Printf("Error dereferencing %s", (*value).(string))
                             log.Fatal(err)
                         }
-                        fmt.Printf("inFileRef %s: resolved to %s\n",(*value).(string), dv)
+                        // fmt.Printf("inFileRef %s: resolved to %s\n",(*value).(string), dv)
                         // TODO: Substitute obj for dereferencedValue(dv)
                         // or use this dvs to generate another document 
                         replacements[(*value).(string)] = dv
                     } else if strings.HasPrefix((*value).(string), httpRef){
                         fmt.Printf("httpRef %s", (*value).(string))
-                        err = httpDef.Dereference((*value).(string), document)
+                        err := httpDef.Dereference((*value).(string), document)
+                        log.Fatal(err)
                     } else {
                         fileData, ref, err := checkFile((*value).(string))
                         if err != nil {
@@ -94,28 +131,5 @@ func Dereference(document []byte) (resolvedDoc []byte, err error){
         })
 
     }
-    // Replace strings for its references
-    for k, v := range replacements {
-        key := fmt.Sprintf("{\"$ref\":\"%s\"}", k)
-        find := []byte(key) 
-        document = bytes.Replace(document, find, v.([]byte), -1)
-    }
-    fmt.Printf("ObjMap %s \n\n", string(document))
-    resolvedDoc = document
-    return resolvedDoc, nil
-}
-
-func checkFile(filename string) (fileData []byte, ref string, err error) {
-    paths := strings.Split(filename, "#")
-    fileData, err = ioutil.ReadFile(paths[0])
-    // fmt.Printf("externalFileRef %s", paths[0])
-    schemaLoader := gojsonschema.NewBytesLoader(fileData)
-    documentLoader := gojsonschema.NewBytesLoader(fileData)
-    result, err := gojsonschema.Validate(schemaLoader, documentLoader)
-    
-    if result.Valid() {
-		return fileData, paths[1], nil
-    }
-    
-    return nil,paths[1], err
+    return 
 }
