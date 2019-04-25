@@ -1,9 +1,8 @@
 package dereferencer
 
 import (
-	// "log"
+	"io/ioutil"
 	"encoding/json"
-	"unicode/utf8"
 	"strings"
 	"github.com/stretchr/objx"
 )
@@ -14,10 +13,6 @@ type fileDereferencer struct {
 	yamlOrJSONDocument []byte
 }
 
-func trimFirstRune(s string) string {
-    _, i := utf8.DecodeRuneInString(s)
-    return s[i:]
-}
 
 func (fdef *fileDereferencer) Dereference(ref string, document []byte) (value []byte, err error) {
 	m, err := objx.FromJSON(string(document))
@@ -32,4 +27,13 @@ func (fdef *fileDereferencer) Dereference(ref string, document []byte) (value []
 		value = belement
 	}
 	return value, nil
+}
+
+func checkFile(filename string) (fileData []byte, ref string, err error) {
+    paths := strings.Split(filename, "#")
+		fileData, err = ioutil.ReadFile(paths[0])
+		if err != nil {
+			return nil, "", err
+		}
+		return fileData, paths[1], nil
 }

@@ -1,9 +1,8 @@
 package dereferencer
 
 import (
+	"unicode/utf8"
 	"bytes"
-    "github.com/xeipuuv/gojsonschema"
-	"io/ioutil"
 	"log"
 	"strings"
 	"fmt"
@@ -18,6 +17,12 @@ const (
     inFileRef = "#"
     httpRef = "http://"
 )
+
+
+func trimFirstRune(s string) string {
+    _, i := utf8.DecodeRuneInString(s)
+    return s[i:]
+}
 
 func eachJSONValue(obj *interface{}, handler func(*string, *int, *interface{})) {
     if obj == nil {
@@ -64,24 +69,8 @@ func Dereference(document []byte) (resolvedDoc []byte, err error){
         }
     }
 
-    // fmt.Printf("ObjMap %s \n\n", string(document))
     resolvedDoc = document
     return resolvedDoc, nil
-}
-
-func checkFile(filename string) (fileData []byte, ref string, err error) {
-    paths := strings.Split(filename, "#")
-    fileData, err = ioutil.ReadFile(paths[0])
-    // fmt.Printf("externalFileRef %s", paths[0])
-    schemaLoader := gojsonschema.NewBytesLoader(fileData)
-    documentLoader := gojsonschema.NewBytesLoader(fileData)
-    result, err := gojsonschema.Validate(schemaLoader, documentLoader)
-    
-    if result.Valid() {
-		return fileData, paths[1], nil
-    }
-    
-    return nil,paths[1], err
 }
 
 func resolve(objmap map[string]interface{}, document []byte) (replacements  map[string]interface{}, err error) {
@@ -89,29 +78,36 @@ func resolve(objmap map[string]interface{}, document []byte) (replacements  map[
     fDef := fileDereferencer{}
     httpDef := httpDereferencer{}
     for _, v := range objmap { 
-        //fmt.Printf("key[%s]\n", k)
         eachJSONValue(&v, func(key *string, index *int, value *interface{}) {
             if key != nil { // It's an object key/value pair...
-                // fmt.Printf("OBJ: key=%q, value=%v\n", *key, *value)
                 if *key == "$ref" {
                     if  strings.HasPrefix((*value).(string), inFileRef){
                         dv, err := fDef.Dereference((*value).(string), document)
                         if err != nil {
-                            fmt.Printf("Error dereferencing %s", (*value).(string))
                             log.Fatal(err)
                         }
-                        // fmt.Printf("inFileRef %s: resolved to %s\n",(*value).(string), dv)
                         // TODO: Substitute obj for dereferencedValue(dv)
                         // or use this dvs to generate another document 
                         replacements[(*value).(string)] = dv
                     } else if strings.HasPrefix((*value).(string), httpRef){
-                        fmt.Printf("httpRef %s", (*value).(string))
-                        err := httpDef.Dereference((*value).(string), document)
-                        log.Fatal(err)
+                        fmt.Printf("httpRef %s\n", (*value).(string))
+                        urlData, ref, err := resolveURL((*value).(string))
+                        if err != nil {
+                            log.Fatal(err)
+                        }
+                        var dv []byte
+                        if ref == "" {
+                            dv, err = httpDef.Dereference((*value).(string), urlData)
+                        }else {
+                            dv, err = httpDef.Dereference(ref, urlData)
+                        }
+                        if err != nil {
+                            log.Fatal(err)
+                        }
+                        replacements[(*value).(string)] = dv
                     } else {
                         fileData, ref, err := checkFile((*value).(string))
                         if err != nil {
-                            fmt.Printf("can't detect which reference are you using for %s", (*value).(string))
                             log.Fatal(err)
                         }
                         var dv []byte
@@ -121,10 +117,9 @@ func resolve(objmap map[string]interface{}, document []byte) (replacements  map[
                             dv, err = fDef.Dereference(ref, fileData)
                         }
                         if err != nil {
-                            fmt.Printf("Error dereferencing %s", (*value).(string))
                             log.Fatal(err)
                         }
-                        fmt.Printf("externalFileRef %s: resolved to %s\n", (*value).(string), dv)
+                        replacements[(*value).(string)] = dv
                     }
                 }
             }
