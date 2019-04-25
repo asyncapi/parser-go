@@ -90,7 +90,6 @@ func resolve(objmap map[string]interface{}, document []byte) (replacements  map[
                         // or use this dvs to generate another document 
                         replacements[(*value).(string)] = dv
                     } else if strings.HasPrefix((*value).(string), httpRef){
-                        fmt.Printf("httpRef %s\n", (*value).(string))
                         urlData, ref, err := resolveURL((*value).(string))
                         if err != nil {
                             log.Fatal(err)

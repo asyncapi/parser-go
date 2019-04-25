@@ -30,7 +30,6 @@ func main() {
 		os.Exit(2)
 	}
 	jOut, err := json.MarshalIndent(p, "", "  ")
-	fmt.Printf("Definition %d", len(jOut))
 	fmt.Printf("Definition %s", string(jOut))
 }
 
