@@ -2,11 +2,11 @@ package dereferencer
 
 import (
 	"fmt"
+	"github.com/ghodss/yaml"
+	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
-	"github.com/ghodss/yaml"
 	"testing"
-	"github.com/stretchr/testify/assert"
 )
 
 const (
@@ -19,10 +19,7 @@ const (
           operationId: receiveLightMeasurement`
 )
 
-
-
-
-func TestDereferenceHttp(t *testing.T){
+func TestDereferenceHttp(t *testing.T) {
 	ts := httptest.NewServer(
 		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if r.URL.Path == "/references.json" {
@@ -30,7 +27,7 @@ func TestDereferenceHttp(t *testing.T){
 				w.Write([]byte(externalContent))
 			}
 		}),
-	  )
+	)
 	defer ts.Close()
 	jsonDocument, err := yaml.YAMLToJSON([]byte(fmt.Sprintf(refHTTPFile, ts.URL)))
 	assert.NoError(t, err, "error converting yaml to json")

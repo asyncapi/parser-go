@@ -1,8 +1,8 @@
 package hlsp
 
 import (
-	"github.com/asyncapi/parser/pkg/dereferencer"
 	"encoding/json"
+	"github.com/asyncapi/parser/pkg/dereferencer"
 
 	"github.com/asyncapi/parser/pkg/models"
 

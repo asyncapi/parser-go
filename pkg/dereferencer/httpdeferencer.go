@@ -1,11 +1,11 @@
 package dereferencer
 
 import (
-	"net/http"
 	"encoding/json"
 	"github.com/stretchr/objx"
-	"io/ioutil"
 	"github.com/xeipuuv/gojsonschema"
+	"io/ioutil"
+	"net/http"
 	"strings"
 )
 
@@ -30,8 +30,6 @@ func (htpp *httpDereferencer) Dereference(ref string, document []byte) (value []
 	return value, nil
 }
 
-
-
 func resolveURL(url string) (URLData []byte, ref string, err error) {
 	paths := strings.Split(url, "#")
 	resp, err := http.Get(paths[0])
@@ -44,12 +42,12 @@ func resolveURL(url string) (URLData []byte, ref string, err error) {
 		return nil, "", err
 	}
 	schemaLoader := gojsonschema.NewBytesLoader(URLData)
-    documentLoader := gojsonschema.NewBytesLoader(URLData)
-    result, err := gojsonschema.Validate(schemaLoader, documentLoader)
-    
-    if result.Valid() {
+	documentLoader := gojsonschema.NewBytesLoader(URLData)
+	result, err := gojsonschema.Validate(schemaLoader, documentLoader)
+
+	if result.Valid() {
 		return URLData, paths[1], nil
-    }
-    
-    return nil,paths[1], err
+	}
+
+	return nil, paths[1], err
 }
