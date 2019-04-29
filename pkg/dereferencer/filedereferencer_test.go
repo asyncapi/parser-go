@@ -47,9 +47,6 @@ func TestDereferenceInFile(t *testing.T) {
 }
 
 func TestDereferenceExternalFile(t *testing.T) {
-	// if runtime.GOOS == "windows" {
-	// 	t.Skip("TODO: Fix it for windows.")
-	// }
 	externalFilePath := fmt.Sprintf("%s/%s", ".", externalFileName)
 	f, err := os.OpenFile(externalFilePath, os.O_RDONLY|os.O_CREATE, 0666)
 	err = ioutil.WriteFile(externalFilePath, []byte(externalContent), 0666)
