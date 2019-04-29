@@ -5,7 +5,6 @@ import (
 	"github.com/ghodss/yaml"
 	"io/ioutil"
 	"os"
-	"runtime"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -48,10 +47,10 @@ func TestDereferenceInFile(t *testing.T) {
 }
 
 func TestDereferenceExternalFile(t *testing.T) {
-	if runtime.GOOS == "windows" {
-		t.Skip("TODO: Fix it for windows.")
-	}
-	externalFilePath := fmt.Sprintf("%s/%s", os.TempDir(), externalFileName)
+	// if runtime.GOOS == "windows" {
+	// 	t.Skip("TODO: Fix it for windows.")
+	// }
+	externalFilePath := fmt.Sprintf("%s/%s", ".", externalFileName)
 	f, err := os.OpenFile(externalFilePath, os.O_RDONLY|os.O_CREATE, 0666)
 	err = ioutil.WriteFile(externalFilePath, []byte(externalContent), 0666)
 	assert.NoError(t, err, "error writing to file")
@@ -60,7 +59,7 @@ func TestDereferenceExternalFile(t *testing.T) {
 		err := os.Remove(externalFilePath)
 		assert.NoError(t, err, "error removing file")
 	}()
-	jsonDocument, err := yaml.YAMLToJSON([]byte(fmt.Sprintf(refExternalFile, os.TempDir())))
+	jsonDocument, err := yaml.YAMLToJSON([]byte(fmt.Sprintf(refExternalFile, ".")))
 	assert.NoError(t, err, "error converting yaml to json")
 	resolvedDoc, err := Dereference(jsonDocument)
 	assert.NoError(t, err, "error Dereferencing")
