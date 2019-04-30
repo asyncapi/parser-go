@@ -16,7 +16,7 @@ info:
   version: '1.0.0'
 channels: {}`)
 
-	doc, err := Parse(asyncapi)
+	doc, err := Parse(asyncapi, true)
 	assert.Assert(t, is.Nil(err))
 	assert.Equal(t, doc.Asyncapi, "2.0.0-rc1")
 	assert.Equal(t, doc.Id, "urn:myapi")
@@ -24,7 +24,7 @@ channels: {}`)
 func TestParseWithEmptyYAML(t *testing.T) {
 	asyncapi := []byte(``)
 
-	_, err := Parse(asyncapi)
+	_, err := Parse(asyncapi, true)
 	assert.Equal(t, err.Error(), "[Invalid AsyncAPI document] Document is empty or null.")
 	assert.Equal(t, len(err.ParsingErrors), 0)
 }
@@ -36,7 +36,7 @@ info:
   version: '1.0.0'
 channels: {}`)
 
-	_, err := Parse(asyncapi)
+	_, err := Parse(asyncapi, true)
 	assert.Equal(t, err.Error(), "[Invalid AsyncAPI document] Check out err.ParsingErrors() for more information.")
 	assert.Equal(t, len(err.ParsingErrors), 1)
 	assert.Equal(t, err.ParsingErrors[0].Details()["property"], "id")
@@ -53,7 +53,7 @@ func TestParseJSON(t *testing.T) {
 		"channels": {}
 	}`)
 
-	jsonDocument, err := ParseJSON(asyncapi)
+	jsonDocument, err := ParseJSON(asyncapi, true)
 	assert.Assert(t, is.Nil(err))
 	assert.Equal(t, string(jsonDocument), `{
 		"asyncapi": "2.0.0-rc1",
@@ -69,7 +69,7 @@ func TestParseJSON(t *testing.T) {
 func TestParseJSONWithInvalidJSON(t *testing.T) {
 	asyncapi := []byte(`"`)
 
-	jsonDocument, err := ParseJSON(asyncapi)
+	jsonDocument, err := ParseJSON(asyncapi, true)
 	assert.Equal(t, err.Error(), "unexpected EOF")
 	assert.Equal(t, len(err.ParsingErrors), 0)
 	assert.Equal(t, string(jsonDocument), ``)
@@ -78,7 +78,7 @@ func TestParseJSONWithInvalidJSON(t *testing.T) {
 func TestParseJSONWithEmptyJSON(t *testing.T) {
 	asyncapi := []byte(``)
 
-	jsonDocument, err := ParseJSON(asyncapi)
+	jsonDocument, err := ParseJSON(asyncapi, true)
 	assert.Equal(t, err.Error(), "EOF")
 	assert.Equal(t, len(err.ParsingErrors), 0)
 	assert.Equal(t, string(jsonDocument), ``)
@@ -94,7 +94,7 @@ func TestParseJSONWithInvalidDocument(t *testing.T) {
 		"channels": {}
 	}`)
 
-	jsonDocument, err := ParseJSON(asyncapi)
+	jsonDocument, err := ParseJSON(asyncapi, true)
 	assert.Equal(t, err.Error(), "[Invalid AsyncAPI document] Check out err.ParsingErrors() for more information.")
 	assert.Equal(t, len(err.ParsingErrors), 1)
 	assert.Equal(t, err.ParsingErrors[0].Details()["property"], "id")
