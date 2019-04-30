@@ -53,21 +53,30 @@ func Dereference(document []byte) (resolvedDoc []byte, err error) {
 	if err != nil {
 		return nil, err
 	}
+
 	var replacements = make(map[string]interface{})
 	replacements, err = resolve(objmap, document)
 	if err != nil {
 		return nil, err
 	}
-	// Replace strings for its references
-	// hardcoded value: 10 loops to resolve $ref inside $refs.
-	for i := 1; i <= 10; i++ {
+	for len(replacements) > 0 {
+		// Replace strings for its references
 		for k, v := range replacements {
 			key := fmt.Sprintf("{\"$ref\":\"%s\"}", k)
 			find := []byte(key)
 			document = bytes.Replace(document, find, v.([]byte), -1)
 		}
+		var objmap map[string]interface{}
+		err = json.Unmarshal(document, &objmap)
+		if err != nil {
+			return nil, err
+		}
+		replacements = make(map[string]interface{})
+		replacements, err = resolve(objmap, document)
+		if err != nil {
+			return nil, err
+		}
 	}
-
 	resolvedDoc = document
 	return resolvedDoc, nil
 }
