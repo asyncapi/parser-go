@@ -16,8 +16,8 @@ import (
 
 //Parse is the C-friendly version of the parser.Parse method.
 //export Parse
-func Parse(yamlOrJSONDocument string) C._ParseResult_ {
-	jsonDoc, err := hlsp.ParseForC([]byte(yamlOrJSONDocument))
+func Parse(yamlOrJSONDocument string, circularReferences bool) C._ParseResult_ {
+	jsonDoc, err := hlsp.ParseForC([]byte(yamlOrJSONDocument), circularReferences)
 
 	if err != nil {
 		ea, count := makeCErrorArray(err)
