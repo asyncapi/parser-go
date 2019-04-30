@@ -14,6 +14,7 @@ import (
 var (
 	defaultDefinitionFile = "asyncapi/2.0.0/example.yaml"
 	filename              = flag.String("file", defaultDefinitionFile, fmt.Sprintf("-file %s", defaultDefinitionFile))
+	circularReferences    = flag.Bool("c", true, "-c=[true,false]")
 )
 
 func init() {
@@ -23,7 +24,7 @@ func init() {
 func main() {
 	fBytes, err := ioutil.ReadFile(*filename)
 	handleError(err, "Reading file")
-	p, perr := parser.Parse(fBytes)
+	p, perr := parser.Parse(fBytes, *circularReferences)
 	if perr != nil {
 		fmt.Fprintln(os.Stderr, errors.Wrap(perr, perr.Error()))
 		fmt.Fprintln(os.Stderr, perr.ParsingErrors)

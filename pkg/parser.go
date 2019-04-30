@@ -9,8 +9,8 @@ import (
 )
 
 // Parse receives either a YAML or JSON AsyncAPI document, and tries to parse it.
-func Parse(yamlOrJSONDocument []byte) (json.RawMessage, *errs.ParserError) {
-	doc, err := hlsp.Parse(yamlOrJSONDocument)
+func Parse(yamlOrJSONDocument []byte, circularReferences bool) (json.RawMessage, *errs.ParserError) {
+	doc, err := hlsp.Parse(yamlOrJSONDocument, circularReferences)
 	if err != nil {
 		return nil, err
 	}
