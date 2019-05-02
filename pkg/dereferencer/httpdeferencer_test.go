@@ -31,7 +31,7 @@ func TestDereferenceHttp(t *testing.T) {
 	defer ts.Close()
 	jsonDocument, err := yaml.YAMLToJSON([]byte(fmt.Sprintf(refHTTPFile, ts.URL)))
 	assert.NoError(t, err, "error converting yaml to json")
-	resolvedDoc, err := Dereference(jsonDocument)
+	resolvedDoc, err := Dereference(jsonDocument, true)
 	assert.NoError(t, err, "error Dereferencing")
 	assert.Contains(t, string(resolvedDoc), expectedResolved, "does not contain resolved $ref")
 }

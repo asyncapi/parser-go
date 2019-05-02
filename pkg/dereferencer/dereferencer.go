@@ -47,29 +47,70 @@ func eachJSONValue(obj *interface{}, handler func(*string, *int, *interface{})) 
 }
 
 // Dereference resolves all references in the document
-func Dereference(document []byte) (resolvedDoc []byte, err error) {
+func Dereference(document []byte, circularReferenceOption bool) (resolvedDoc []byte, err error) {
 	var objmap map[string]interface{}
 	err = json.Unmarshal(document, &objmap)
 	if err != nil {
 		return nil, err
 	}
+
 	var replacements = make(map[string]interface{})
 	replacements, err = resolve(objmap, document)
 	if err != nil {
 		return nil, err
 	}
-	// Replace strings for its references
-	// hardcoded value: 10 loops to resolve $ref inside $refs.
-	for i := 1; i <= 10; i++ {
+	i := 1
+	for len(replacements) > 0 {
+		// Replace strings for its references
 		for k, v := range replacements {
 			key := fmt.Sprintf("{\"$ref\":\"%s\"}", k)
 			find := []byte(key)
 			document = bytes.Replace(document, find, v.([]byte), -1)
 		}
+		var objmap map[string]interface{}
+		err = json.Unmarshal(document, &objmap)
+		if err != nil {
+			return nil, err
+		}
+		var oldReplacements = make(map[string]interface{})
+		oldReplacements = copyMap(replacements)
+		replacements = make(map[string]interface{})
+		replacements, err = resolve(objmap, document)
+		// After 9 loops or multiples of 10 resolve circulars
+		if i%10 == 0 {
+			replacements, err = resolveCircular(oldReplacements, replacements, circularReferenceOption)
+			if err != nil {
+				return nil, err
+			}
+		}
+		if err != nil {
+			return nil, err
+		}
+		i++
 	}
-
 	resolvedDoc = document
 	return resolvedDoc, nil
+}
+
+func copyMap(originalMap map[string]interface{}) map[string]interface{} {
+	mapCopy := make(map[string]interface{})
+	// Copy from the original map to the target map
+	for key, value := range originalMap {
+		mapCopy[key] = value
+	}
+	return mapCopy
+}
+
+func resolveCircular(oldReplacements, newReplacements map[string]interface{}, circularReferenceOption bool) (map[string]interface{}, error) {
+	for k := range oldReplacements {
+		if newReplacements[k] != nil {
+			if !circularReferenceOption {
+				return newReplacements, fmt.Errorf("you a circular reference at %s please review it", k)
+			}
+			newReplacements[k] = []byte("{\"circular\": \"circular\"}")
+		}
+	}
+	return newReplacements, nil
 }
 
 func resolve(objmap map[string]interface{}, document []byte) (replacements map[string]interface{}, err error) {

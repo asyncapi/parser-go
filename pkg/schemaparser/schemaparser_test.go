@@ -81,7 +81,7 @@ func TestParse(t *testing.T) {
 		}
 	}`)
 
-	doc, err := hlsp.Parse(asyncapi)
+	doc, err := hlsp.Parse(asyncapi, true)
 	assert.Assert(t, is.Nil(err))
 
 	err = Parse(doc)

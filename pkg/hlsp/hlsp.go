@@ -12,8 +12,8 @@ import (
 )
 
 // Parse receives either a YAML or JSON AsyncAPI document, and tries to parse it.
-func Parse(yamlOrJSONDocument []byte) (*models.AsyncapiDocument, *errs.ParserError) {
-	jsonDocument, err := ParseForC(yamlOrJSONDocument)
+func Parse(yamlOrJSONDocument []byte, circularReferences bool) (*models.AsyncapiDocument, *errs.ParserError) {
+	jsonDocument, err := ParseForC(yamlOrJSONDocument, circularReferences)
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +30,7 @@ func Parse(yamlOrJSONDocument []byte) (*models.AsyncapiDocument, *errs.ParserErr
 
 // ParseForC receives either a YAML or JSON AsyncAPI document, and tries to parse it.
 // Returns the result as a json.RawMessage.
-func ParseForC(yamlOrJSONDocument []byte) (json.RawMessage, *errs.ParserError) {
+func ParseForC(yamlOrJSONDocument []byte, circularReferences bool) (json.RawMessage, *errs.ParserError) {
 	jsonDocument, err := yaml.YAMLToJSON(yamlOrJSONDocument)
 	if err != nil {
 		return nil, &errs.ParserError{
@@ -43,7 +43,7 @@ func ParseForC(yamlOrJSONDocument []byte) (json.RawMessage, *errs.ParserError) {
 		}
 	}
 
-	jsonBytes, e := ParseJSON(jsonDocument)
+	jsonBytes, e := ParseJSON(jsonDocument, circularReferences)
 	if e != nil {
 		return nil, e
 	}
@@ -55,7 +55,7 @@ func ParseForC(yamlOrJSONDocument []byte) (json.RawMessage, *errs.ParserError) {
 // Skips specification extensions and schemas validation.
 // If validation fails, the Parser/Validator should trigger an error.
 // Produces a beautified version of the document in JSON Schema Draft 07.
-func ParseJSON(jsonDocument []byte) (json.RawMessage, *errs.ParserError) {
+func ParseJSON(jsonDocument []byte, circularReferences bool) (json.RawMessage, *errs.ParserError) {
 	schemaLoader := gojsonschema.NewBytesLoader(getSchema())
 	documentLoader := gojsonschema.NewBytesLoader(jsonDocument)
 
@@ -67,7 +67,7 @@ func ParseJSON(jsonDocument []byte) (json.RawMessage, *errs.ParserError) {
 	}
 
 	if result.Valid() {
-		jsonDocument, err = dereferencer.Dereference(jsonDocument)
+		jsonDocument, err = dereferencer.Dereference(jsonDocument, circularReferences)
 		return jsonDocument, nil
 	}
 

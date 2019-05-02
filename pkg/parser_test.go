@@ -26,7 +26,7 @@ channels:
               type: string
 `)
 
-	doc, err := Parse(asyncapi)
+	doc, err := Parse(asyncapi, true)
 	assert.Assert(t, is.Nil(err))
 	fmt.Printf("ParsedFile %v", string(doc))
 	// assert.Equal(t, doc.Asyncapi, "2.0.0")
