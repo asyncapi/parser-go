@@ -579,6 +579,10 @@ func getSchema() []byte {
             "$ref": "#/definitions/parameter"
           }
         },
+        "description": {
+          "type": "string",
+          "description": "A description of the channel."
+        },
         "publish": {
           "$ref": "#/definitions/operation"
         },
@@ -732,7 +736,7 @@ func getSchema() []byte {
                 "headers": {
                   "type": "object",
                   "additionalProperties": {
-                    "oneOf": [
+                    "anyOf": [
                       {
                         "$ref": "#/definitions/Reference"
                       },
