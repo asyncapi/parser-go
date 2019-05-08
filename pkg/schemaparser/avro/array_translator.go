@@ -9,8 +9,13 @@ import (
 
 // ArrayItems Items of the array
 type ArrayItems struct {
-	Type                 string                   `json:"type"`
+	Type                 string                   `json:"type,omitempty"`
 	AdditionalProperties AdditionalPropertiesItem `json:"additionalProperties,omitempty"`
+}
+
+// ArrayItems Items of the array
+type SimpleArrayItems struct {
+	Type string `json:"type,omitempty"`
 }
 
 // AdditionalPropertiesItem maps additional properties object
@@ -27,13 +32,12 @@ type ArrayAvro struct {
 
 // SimpleArrayAvro maps simple array scheme
 type SimpleArrayAvro struct {
-	Type  string `json:"type,omitempty"`
-	Items string `json:"items,omitempty"`
+	Type  string           `json:"type"`
+	Items SimpleArrayItems `json:"items"`
 }
 
 // Convert transforms avro formatted message to JSONSchema
 func (ra *ArrayAvro) Convert(message map[string]interface{}) (string, *errs.ParserError) {
-	var aI ArrayItems
 	var aA ArrayAvro
 	var sAa SimpleArrayAvro
 	var aAbytes []byte
@@ -41,8 +45,8 @@ func (ra *ArrayAvro) Convert(message map[string]interface{}) (string, *errs.Pars
 	// Simple objects
 	case string:
 		log.Printf("String")
-		aI = ArrayItems{Type: message["items"].(string)}
-		sAa = SimpleArrayAvro{Type: "array", Items: message["items"].(string)}
+		aI := SimpleArrayItems{Type: message["items"].(string)}
+		sAa = SimpleArrayAvro{Type: "array", Items: aI}
 		aAbytes, err := json.Marshal(sAa)
 		if err != nil {
 			return "", errs.New(err.Error())
@@ -52,7 +56,7 @@ func (ra *ArrayAvro) Convert(message map[string]interface{}) (string, *errs.Pars
 	case map[string]interface{}:
 		log.Printf("Map")
 		itemMap := message["items"].(map[string]interface{})
-		aI = ArrayItems{Type: itemMap["type"].(string), AdditionalProperties: convertValues(itemMap["values"].(string))}
+		aI := ArrayItems{Type: itemMap["type"].(string), AdditionalProperties: convertValues(itemMap["values"].(string))}
 		aA = ArrayAvro{Type: "array", Items: aI}
 		aAbytes, err := json.Marshal(aA)
 		if err != nil {

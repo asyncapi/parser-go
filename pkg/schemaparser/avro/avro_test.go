@@ -1,10 +1,12 @@
 package avro
 
 import (
-	"github.com/xeipuuv/gojsonschema"
 	"encoding/json"
 	"log"
 	"testing"
+
+	"github.com/asyncapi/parser/pkg/dereferencer"
+	"github.com/xeipuuv/gojsonschema"
 
 	"github.com/linkedin/goavro/v2"
 	"github.com/stretchr/testify/assert"
@@ -152,7 +154,8 @@ func TestAvro2Json(t *testing.T) {
 	err = Parse(&bschema)
 	log.Printf("Avro schema: %s", bschema)
 	assert.Contains(t, string(bschema), `"record:com.miguno.avro:twitter_schema": {"type":"object","additionalProperties":false,"required":["username","tweet","timestamp"],"properties":{"timestamp":{"type":"integer"},"tweet":{"type":"string"},"username":{"type":"string"}}}`)
-	assert.NoError(t, checkJSONSchema(string(bschema)))
+	resolvedDoc, _ := dereferencer.Dereference(bschema, true)
+	assert.NoError(t, checkJSONSchema(string(resolvedDoc)))
 }
 
 // func TestUnionAvro2Json(t *testing.T) {
@@ -164,6 +167,7 @@ func TestAvro2Json(t *testing.T) {
 // 	err = Parse(&bschema)
 // 	log.Printf("Avro schema: %s", bschema)
 // 	assert.Contains(t, string(bschema), getJSONSchemaForTest())
+//	assert.NoError(t, checkJSONSchema(string(bschema)))
 // }
 
 func TestSimpleArrayAvro2Json(t *testing.T) {
@@ -174,21 +178,22 @@ func TestSimpleArrayAvro2Json(t *testing.T) {
 	bschema := json.RawMessage(codec.Schema())
 	err = Parse(&bschema)
 	log.Printf("Avro schema: %s", bschema)
-	assert.Contains(t, string(bschema), `{"type":"array","items":"boolean"}`)
-	assert.NoError(t, checkJSONSchema(string(bschema)))
+	assert.Contains(t, string(bschema), `{"type":"array","items":{"type":"boolean"}}`)
+	resolvedDoc, _ := dereferencer.Dereference(bschema, true)
+	assert.NoError(t, checkJSONSchema(string(resolvedDoc)))
 }
 
-// func TestMapArrayAvro2Json(t *testing.T) {
-// 	avroSchema := getMapArrayAvroSchemaForTest()
-// 	codec, err := goavro.NewCodec(string(avroSchema))
-// 	assert.NoError(t, err)
-// 	// log.Printf("Avro schema: %s", codec.Schema())
-// 	bschema := json.RawMessage(codec.Schema())
-// 	err = Parse(&bschema)
-// 	log.Printf("Avro schema: %s", bschema)
-// 	assert.Contains(t, string(bschema), `{"type":"array","items":{"type":"map","additionalProperties":{"type":"string","pattern":"^[\u0000-ÿ]*$"}}}`)
-// 	assert.NoError(t, checkJSONSchema(string(bschema)))
-// }
+func TestMapArrayAvro2Json(t *testing.T) {
+	avroSchema := getMapArrayAvroSchemaForTest()
+	codec, err := goavro.NewCodec(string(avroSchema))
+	assert.NoError(t, err)
+	// log.Printf("Avro schema: %s", codec.Schema())
+	bschema := json.RawMessage(codec.Schema())
+	err = Parse(&bschema)
+	log.Printf("Avro schema: %s", bschema)
+	assert.Contains(t, string(bschema), `{"type":"array","items":{"type":"map","additionalProperties":{"type":"string","pattern":"^[\u0000-ÿ]*$"}}}`)
+	//assert.NoError(t, checkJSONSchema(string(bschema)))
+}
 
 func TestEnumAvro2Json(t *testing.T) {
 	avroSchema := getEnumAvroSchemaForTest()
@@ -239,8 +244,8 @@ func TestSimpleAvro2Json(t *testing.T) {
 }
 
 func checkJSONSchema(schema string) error {
-		sl := gojsonschema.NewSchemaLoader()
-		loader := gojsonschema.NewStringLoader(string(schema))
-		_, err := sl.Compile(loader)
-		return err
+	sl := gojsonschema.NewSchemaLoader()
+	loader := gojsonschema.NewStringLoader(string(schema))
+	_, err := sl.Compile(loader)
+	return err
 }
