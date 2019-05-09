@@ -123,3 +123,37 @@ func Parse(message *json.RawMessage) *errs.ParserError {
 
 	return nil
 }
+
+// TODO: int, long, float
+func convertValues(attrValues string) AdditionalPropertiesItem {
+	log.Printf("Values %s", attrValues)
+	switch attrValues {
+	case "bytes":
+		return AdditionalPropertiesItem{Type: convertType(attrValues), Pattern: "^[\u0000-\u00ff]*$"}
+	case "int":
+		return AdditionalPropertiesItem{Type: convertType(attrValues), Min: minInt, Max: maxInt}
+	case "long":
+		return AdditionalPropertiesItem{Type: convertType(attrValues), Min: minLong, Max: maxLong}
+	case "float", "double":
+		return AdditionalPropertiesItem{Type: convertType(attrValues)}
+	case "map":
+		return AdditionalPropertiesItem{Type: convertType(attrValues)}
+	default:
+		return AdditionalPropertiesItem{Type: attrValues}
+	}
+}
+
+func convertType(attrType string) string {
+	switch attrType {
+	case "long", "int":
+		return "integer"
+	case "float", "double":
+		return "number"
+	case "bytes":
+		return "string"
+	case "map":
+		return "object"
+	default:
+		return attrType
+	}
+}

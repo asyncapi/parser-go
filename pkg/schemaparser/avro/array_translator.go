@@ -13,7 +13,7 @@ type ArrayItems struct {
 	AdditionalProperties AdditionalPropertiesItem `json:"additionalProperties,omitempty"`
 }
 
-// ArrayItems Items of the array
+// SimpleArrayItems Items of the array
 type SimpleArrayItems struct {
 	Type string `json:"type,omitempty"`
 }
@@ -22,6 +22,8 @@ type SimpleArrayItems struct {
 type AdditionalPropertiesItem struct {
 	Type    string `json:"type"`
 	Pattern string `json:"pattern,omitempty"`
+	Min     float64 `json:"minimum,omitempty"`
+	Max     float64 `json:"maximum,omitempty"`
 }
 
 // ArrayAvro maps avro array scheme
@@ -56,7 +58,7 @@ func (ra *ArrayAvro) Convert(message map[string]interface{}) (string, *errs.Pars
 	case map[string]interface{}:
 		log.Printf("Map")
 		itemMap := message["items"].(map[string]interface{})
-		aI := ArrayItems{Type: itemMap["type"].(string), AdditionalProperties: convertValues(itemMap["values"].(string))}
+		aI := ArrayItems{Type: convertType(itemMap["type"].(string)), AdditionalProperties: convertValues(itemMap["values"].(string))}
 		aA = ArrayAvro{Type: "array", Items: aI}
 		aAbytes, err := json.Marshal(aA)
 		if err != nil {
@@ -68,14 +70,4 @@ func (ra *ArrayAvro) Convert(message map[string]interface{}) (string, *errs.Pars
 	}
 
 	return string(aAbytes), nil
-}
-
-func convertValues(attrValues string) AdditionalPropertiesItem {
-	log.Printf("Values %s", attrValues)
-	switch attrValues {
-	case "bytes":
-		return AdditionalPropertiesItem{Type: "string", Pattern: "^[\u0000-\u00ff]*$"}
-	default:
-		return AdditionalPropertiesItem{}
-	}
 }

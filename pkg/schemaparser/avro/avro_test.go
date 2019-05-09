@@ -118,6 +118,27 @@ func getSimpleAvroSchemaForTest() [][]byte {
 	return output
 }
 
+func getSimpleMapAvroSchemaForTest() []byte {
+	return []byte(`
+	{
+		"type": "map",
+		"values": "boolean"
+	}
+`)
+}
+
+func getComposedMapAvroSchemaForTest() []byte {
+	return []byte(`
+	{
+		"type": "map",
+		"values": {
+				"type": "map",
+				"values": "bytes"
+		}
+}
+`)
+}
+
 func getJSONSchemaForTest() []byte {
 	return []byte(`
 	{
@@ -191,8 +212,8 @@ func TestMapArrayAvro2Json(t *testing.T) {
 	bschema := json.RawMessage(codec.Schema())
 	err = Parse(&bschema)
 	log.Printf("Avro schema: %s", bschema)
-	assert.Contains(t, string(bschema), `{"type":"array","items":{"type":"map","additionalProperties":{"type":"string","pattern":"^[\u0000-ÿ]*$"}}}`)
-	//assert.NoError(t, checkJSONSchema(string(bschema)))
+	assert.Contains(t, string(bschema), `{"type":"array","items":{"type":"object","additionalProperties":{"type":"string","pattern":"^[\u0000-ÿ]*$"}}}`)
+	assert.NoError(t, checkJSONSchema(string(bschema)))
 }
 
 func TestEnumAvro2Json(t *testing.T) {
@@ -219,15 +240,15 @@ func TestFixedAvro2Json(t *testing.T) {
 	assert.NoError(t, checkJSONSchema(string(bschema)))
 }
 
-// func TestFixedMapAvro2Json(t *testing.T) {
-// 	avroSchema := getFixedMapAvroSchemaForTest()
-// 	codec, err := goavro.NewCodec(string(avroSchema))
-// 	assert.NoError(t, err)
-// 	bschema := json.RawMessage(codec.Schema())
-// 	err = Parse(&bschema)
-// 	log.Printf("Avro schema: %s", bschema)
-// 	assert.Contains(t, string(bschema), `fixed:md5`)
-// }
+func TestFixedMapAvro2Json(t *testing.T) {
+	avroSchema := getFixedMapAvroSchemaForTest()
+	codec, err := goavro.NewCodec(string(avroSchema))
+	assert.NoError(t, err)
+	bschema := json.RawMessage(codec.Schema())
+	err = Parse(&bschema)
+	log.Printf("Avro schema: %s", bschema)
+	assert.Contains(t, string(bschema), `fixed:md5`)
+}
 
 // TODO: improve tests
 func TestSimpleAvro2Json(t *testing.T) {
@@ -241,6 +262,28 @@ func TestSimpleAvro2Json(t *testing.T) {
 		assert.Contains(t, string(bschema), `type`)
 		assert.NoError(t, checkJSONSchema(string(bschema)))
 	}
+}
+
+func TestMapAvro2Json(t *testing.T) {
+	avroSchema := getSimpleMapAvroSchemaForTest()
+	codec, err := goavro.NewCodec(string(avroSchema))
+	assert.NoError(t, err)
+	bschema := json.RawMessage(codec.Schema())
+	err = Parse(&bschema)
+	log.Printf("Avro schema: %s", bschema)
+	assert.Contains(t, string(bschema), `type`)
+	assert.NoError(t, checkJSONSchema(string(bschema)))
+}
+
+func TestComposeMapAvro2Json(t *testing.T) {
+	avroSchema := getComposedMapAvroSchemaForTest()
+	codec, err := goavro.NewCodec(string(avroSchema))
+	assert.NoError(t, err)
+	bschema := json.RawMessage(codec.Schema())
+	err = Parse(&bschema)
+	log.Printf("Avro schema: %s", bschema)
+	assert.Contains(t, string(bschema), `{"type":"object","additionalProperties":{"type":"object","additionalProperties":{"type":"string","pattern":"^[\u0000-ÿ]*$"}}}`)
+	assert.NoError(t, checkJSONSchema(string(bschema)))
 }
 
 func checkJSONSchema(schema string) error {

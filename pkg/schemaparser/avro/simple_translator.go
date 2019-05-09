@@ -48,16 +48,3 @@ func (ra *SimpleAvro) Convert(message map[string]interface{}) (string, *errs.Par
 	translated := fmt.Sprintf("%s", string(jRAvro))
 	return translated, nil
 }
-
-func convertType(attrType string) string {
-	switch attrType {
-	case "long", "int":
-		return "integer"
-	case "float", "double":
-		return "number"
-	case "bytes":
-		return "string"
-	default:
-		return attrType
-	}
-}
