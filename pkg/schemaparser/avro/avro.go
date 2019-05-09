@@ -58,6 +58,7 @@ func Parse(message *json.RawMessage) *errs.ParserError {
 					return errs.New(perr.Error())
 				}
 				// remove definitions amb move them to the root object
+				moveDefintionsToRoot(&uAvro, o.(map[string]interface{})["type"].(string), &convertedMessage)
 				uAvro.OneOf = append(uAvro.OneOf, []byte(convertedMessage))
 			// Simple objects
 			case string:
@@ -176,4 +177,47 @@ func translate(itemsMap map[string]interface{}) (string, *errs.ParserError) {
 		}
 	}
 	return convertedMessage, nil
+}
+
+func moveDefintionsToRoot(uAvro *UnionAvro, typeObj string, convertedMessage *string) {
+	switch typeObj {
+	case "enum":
+		var enumAvro EnumAvro
+		json.Unmarshal([]byte(*convertedMessage), &enumAvro)
+		uAvro.Definitions = enumAvro.Definitions
+		enumAvro.Definitions = nil
+		noDefinitions, _ := json.Marshal(enumAvro)
+		*convertedMessage = string(noDefinitions)
+	case "record":
+		var rAvro RecordAvro
+		json.Unmarshal([]byte(*convertedMessage), &rAvro)
+		uAvro.Definitions = rAvro.Definitions
+		rAvro.Definitions = nil
+		noDefinitions, _ := json.Marshal(rAvro)
+		*convertedMessage = string(noDefinitions)
+	case "array":
+		var aAvro ArrayAvro
+		json.Unmarshal([]byte(*convertedMessage), &aAvro)
+		uAvro.Definitions = aAvro.Definitions
+		aAvro.Definitions = nil
+		noDefinitions, _ := json.Marshal(aAvro)
+		*convertedMessage = string(noDefinitions)
+	case "fixed":
+		var fAvro FixedAvro
+		json.Unmarshal([]byte(*convertedMessage), &fAvro)
+		uAvro.Definitions = fAvro.Definitions
+		fAvro.Definitions = nil
+		noDefinitions, _ := json.Marshal(fAvro)
+		*convertedMessage = string(noDefinitions)
+	// case "null", "int", "string", "long", "boolean", "float", "double", "bytes":
+	case "map":
+		var mapAvro ComposeMapAvro
+		json.Unmarshal([]byte(*convertedMessage), &mapAvro)
+		uAvro.Definitions = mapAvro.Definitions
+		mapAvro.Definitions = nil
+		noDefinitions, _ := json.Marshal(mapAvro)
+		*convertedMessage = string(noDefinitions)
+	default:
+		log.Println("Unknown type. Please create a Feature request")
+	}
 }

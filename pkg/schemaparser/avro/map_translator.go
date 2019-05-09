@@ -18,6 +18,7 @@ type ComposeMapAvro struct {
 type MapAvro struct {
 	Type                 string                   `json:"type,omitempty"`
 	AdditionalProperties AdditionalPropertiesItem `json:"additionalProperties,omitempty"`
+	Definitions          json.RawMessage          `json:"definitions,omitempty"`
 }
 
 // NewMapAvro creates a fixed avro depending on the type

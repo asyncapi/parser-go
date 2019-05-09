@@ -22,6 +22,7 @@ type RecordAvro struct {
 	AdditionalProperties bool                    `json:"additionalProperties"`
 	Required             []string                `json:"required"`
 	Props                map[string]PropertyItem `json:"properties"`
+	Definitions          json.RawMessage         `json:"definitions,omitempty"`
 }
 
 // Convert transforms avro formatted message to JSONSchema

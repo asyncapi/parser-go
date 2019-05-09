@@ -187,7 +187,7 @@ func TestUnionAvro2Json(t *testing.T) {
 	bschema := json.RawMessage(codec.Schema())
 	err = Parse(&bschema)
 	log.Printf("Avro schema: %s", bschema)
-	assert.Contains(t, string(bschema), `{"oneOf": [{"type": "string"}, {"type": "null"},{"type": "object","additionalProperties":{"$ref": "#/definitions/enum:gender"}}],"definitions": {"enum:gender": {"enum": ["MALE", "FEMALE", "WHOCARES"]}}}`)
+	assert.Contains(t, string(bschema), `{"oneOf":[{"type":"string"},{"type":"null"},{"type":"object","additionalProperties":{"$ref":"#/definitions/enum:gender"}}],"definitions":{"enum:gender":{"enum":["MALE","FEMALE","WHOCARES"]}}}`)
 	assert.NoError(t, checkJSONSchema(string(bschema)))
 }
 

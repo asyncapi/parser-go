@@ -9,10 +9,11 @@ import (
 
 // FixedAvro maps fixed scheme
 type FixedAvro struct {
-	Type    string  `json:"type,omitempty"`
-	Pattern string  `json:"pattern,omitempty"`
-	Min     float64 `json:"minLength,omitempty"`
-	Max     float64 `json:"maxLength,omitempty"`
+	Type        string          `json:"type,omitempty"`
+	Pattern     string          `json:"pattern,omitempty"`
+	Min         float64         `json:"minLength,omitempty"`
+	Max         float64         `json:"maxLength,omitempty"`
+	Definitions json.RawMessage `json:"definitions,omitempty"`
 }
 
 // NewFixedAvro creates a fixed avro depending on the type

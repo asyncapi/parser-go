@@ -20,16 +20,17 @@ type SimpleArrayItems struct {
 
 // AdditionalPropertiesItem maps additional properties object
 type AdditionalPropertiesItem struct {
-	Type    string `json:"type"`
-	Pattern string `json:"pattern,omitempty"`
+	Type    string  `json:"type"`
+	Pattern string  `json:"pattern,omitempty"`
 	Min     float64 `json:"minimum,omitempty"`
 	Max     float64 `json:"maximum,omitempty"`
 }
 
 // ArrayAvro maps avro array scheme
 type ArrayAvro struct {
-	Type  string     `json:"type,omitempty"`
-	Items ArrayItems `json:"items,omitempty"`
+	Type        string          `json:"type,omitempty"`
+	Items       ArrayItems      `json:"items,omitempty"`
+	Definitions json.RawMessage `json:"definitions,omitempty"`
 }
 
 // SimpleArrayAvro maps simple array scheme

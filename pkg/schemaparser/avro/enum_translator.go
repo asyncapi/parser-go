@@ -9,7 +9,8 @@ import (
 
 // EnumAvro maps enum avro scheme
 type EnumAvro struct {
-	Enum []string `json:"enum"`
+	Enum        []string        `json:"enum"`
+	Definitions json.RawMessage `json:"definitions,omitempty"`
 }
 
 // Convert transforms avro formatted message to JSONSchema
