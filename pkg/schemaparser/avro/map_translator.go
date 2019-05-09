@@ -7,12 +7,6 @@ import (
 	"github.com/asyncapi/parser/pkg/errs"
 )
 
-// Reference maps a ref object with its definitions
-type Reference struct {
-	Ref         json.RawMessage `json:"$ref"`
-	Definitions json.RawMessage `json:"definitions,omitempty"`
-}
-
 // ComposeMapAvro maps a avro map object
 type ComposeMapAvro struct {
 	Type        string          `json:"type,omitempty"`

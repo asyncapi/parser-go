@@ -9,6 +9,12 @@ import (
 	"github.com/linkedin/goavro"
 )
 
+// Reference maps a ref object with its definitions
+type Reference struct {
+	Ref         json.RawMessage `json:"$ref"`
+	Definitions json.RawMessage `json:"definitions,omitempty"`
+}
+
 //SchemaConverter is the basic interface that schema converters needs to implement
 type SchemaConverter interface {
 	Convert(map[string]interface{}) (string, *errs.ParserError)
