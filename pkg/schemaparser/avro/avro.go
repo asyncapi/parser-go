@@ -35,97 +35,55 @@ func Parse(message *json.RawMessage) *errs.ParserError {
 		log.Println("Error parsing JSON: ", err)
 	}
 
-	var convertedMessage string
 	// JSON object parses into a map with string keys
 	itemsMap, ok := f.(map[string]interface{})
 	if ok {
-		for k, v := range itemsMap {
-			if k == "type" {
-				switch v {
-				case "enum":
-					ra := &EnumAvro{}
-					r, err := ra.Convert(itemsMap)
-					if err != nil {
-						return errs.New(err.Error())
-					}
-					convertedMessage = fmt.Sprintf("%s", r)
-				case "record":
-					ra := &RecordAvro{}
-					r, err := ra.Convert(itemsMap)
-					if err != nil {
-						return errs.New(err.Error())
-					}
-					convertedMessage = fmt.Sprintf("%s", r)
-				case "array":
-					ra := &ArrayAvro{}
-					r, err := ra.Convert(itemsMap)
-					if err != nil {
-						return errs.New(err.Error())
-					}
-					convertedMessage = fmt.Sprintf("%s", r)
-				case "fixed":
-					ra := &FixedAvro{}
-					r, err := ra.Convert(itemsMap)
-					if err != nil {
-						return errs.New(err.Error())
-					}
-					convertedMessage = fmt.Sprintf("%s", r)
-				case "null", "int", "string", "long", "boolean", "float", "double", "bytes":
-					ra := &SimpleAvro{}
-					r, err := ra.Convert(itemsMap)
-					if err != nil {
-						return errs.New(err.Error())
-					}
-					convertedMessage = fmt.Sprintf("%s", r)
-				case "map":
-					ra := &MapAvro{}
-					r, err := ra.Convert(itemsMap)
-					if err != nil {
-						return errs.New(err.Error())
-					}
-					convertedMessage = fmt.Sprintf("%s", r)
-				default:
-					log.Println("Unknown type. Please create a Feature request")
-					return errs.New("Unknown type. Please create a Feature request")
-				}
-			}
+		convertedMessage, perr := translate(itemsMap)
+		if perr != nil {
+			return errs.New(perr.Error())
 		}
+		*message = []byte(convertedMessage)
 	} else {
 		log.Print("Union type")
 		objectArray := f.([]interface{})
+		var uAvro UnionAvro
 		for _, o := range objectArray {
 			var itemMap interface{}
 			switch o.(type) {
 			// Complex objects
 			case map[string]interface{}:
 				log.Printf("Map")
-				itemMap = o.(map[string]interface{})
-				for k, v := range itemMap.(map[string]interface{}) {
-					log.Printf("key %s,value %s \n", k, v)
-					if k == "type" {
-						switch v {
-						case "record":
-							log.Printf("Record type %s \n", v.(string))
-							// ra := &RecordAvro{}
-							// ra.Convert(v.([]byte))
-						default:
-							log.Println("Unknown type. Please create a Feature request")
-						}
-					}
+				convertedMessage, perr := translate(o.(map[string]interface{}))
+				if perr != nil {
+					return errs.New(perr.Error())
 				}
+				uAvro.OneOf = append(uAvro.OneOf, []byte(convertedMessage))
 			// Simple objects
 			case string:
 				log.Printf("String")
 				itemMap = o.(string)
+				if itemMap == "null" {
+					itemsMap = make(map[string]interface{})
+					itemsMap["type"] = "null"
+					convertedMessage, perr := translate(itemsMap)
+					if perr != nil {
+						return errs.New(perr.Error())
+					}
+					uAvro.OneOf = append(uAvro.OneOf, []byte(convertedMessage))
+				}
+
 				log.Printf("String %s", itemMap)
 			default:
 				log.Printf("I don't know about type %T!\n", o)
 			}
 
 		}
+		bUAvro, err := json.Marshal(uAvro)
+		if err != nil {
+			return errs.New(err.Error())
+		}
+		*message = bUAvro
 	}
-
-	*message = []byte(convertedMessage)
 
 	return nil
 }
@@ -162,4 +120,60 @@ func convertType(attrType string) string {
 	default:
 		return attrType
 	}
+}
+
+func translate(itemsMap map[string]interface{}) (string, *errs.ParserError) {
+	var convertedMessage string
+	for k, v := range itemsMap {
+		if k == "type" {
+			switch v {
+			case "enum":
+				ra := &EnumAvro{}
+				r, err := ra.Convert(itemsMap)
+				if err != nil {
+					return "", errs.New(err.Error())
+				}
+				convertedMessage = fmt.Sprintf("%s", r)
+			case "record":
+				ra := &RecordAvro{}
+				r, err := ra.Convert(itemsMap)
+				if err != nil {
+					return "", errs.New(err.Error())
+				}
+				convertedMessage = fmt.Sprintf("%s", r)
+			case "array":
+				ra := &ArrayAvro{}
+				r, err := ra.Convert(itemsMap)
+				if err != nil {
+					return "", errs.New(err.Error())
+				}
+				convertedMessage = fmt.Sprintf("%s", r)
+			case "fixed":
+				ra := &FixedAvro{}
+				r, err := ra.Convert(itemsMap)
+				if err != nil {
+					return "", errs.New(err.Error())
+				}
+				convertedMessage = fmt.Sprintf("%s", r)
+			case "null", "int", "string", "long", "boolean", "float", "double", "bytes":
+				ra := &SimpleAvro{}
+				r, err := ra.Convert(itemsMap)
+				if err != nil {
+					return "", errs.New(err.Error())
+				}
+				convertedMessage = fmt.Sprintf("%s", r)
+			case "map":
+				ra := &MapAvro{}
+				r, err := ra.Convert(itemsMap)
+				if err != nil {
+					return "", errs.New(err.Error())
+				}
+				convertedMessage = fmt.Sprintf("%s", r)
+			default:
+				log.Println("Unknown type. Please create a Feature request")
+				return "", errs.New("Unknown type. Please create a Feature request")
+			}
+		}
+	}
+	return convertedMessage, nil
 }

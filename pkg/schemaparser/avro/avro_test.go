@@ -179,17 +179,17 @@ func TestAvro2Json(t *testing.T) {
 	assert.NoError(t, checkJSONSchema(string(resolvedDoc)))
 }
 
-// func TestUnionAvro2Json(t *testing.T) {
-// 	avroSchema := getUnionAvroSchemaForTest()
-// 	codec, err := goavro.NewCodec(string(avroSchema))
-// 	assert.NoError(t, err)
-// 	// log.Printf("Avro schema: %s", codec.Schema())
-// 	bschema := json.RawMessage(codec.Schema())
-// 	err = Parse(&bschema)
-// 	log.Printf("Avro schema: %s", bschema)
-// 	assert.Contains(t, string(bschema), getJSONSchemaForTest())
-//	assert.NoError(t, checkJSONSchema(string(bschema)))
-// }
+func TestUnionAvro2Json(t *testing.T) {
+	avroSchema := getUnionAvroSchemaForTest()
+	codec, err := goavro.NewCodec(string(avroSchema))
+	assert.NoError(t, err)
+	// log.Printf("Avro schema: %s", codec.Schema())
+	bschema := json.RawMessage(codec.Schema())
+	err = Parse(&bschema)
+	log.Printf("Avro schema: %s", bschema)
+	assert.Contains(t, string(bschema), `{"type":"object","additionalProperties":"#/definitions/enum:gender","definitions":{"enum:gender":{"enum":["MALE","FEMALE","WHOCARES"]}}}`)
+	assert.NoError(t, checkJSONSchema(string(bschema)))
+}
 
 func TestSimpleArrayAvro2Json(t *testing.T) {
 	avroSchema := getSimpleArrayAvroSchemaForTest()
