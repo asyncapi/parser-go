@@ -57,6 +57,7 @@ func Parse(message *json.RawMessage) *errs.ParserError {
 				if perr != nil {
 					return errs.New(perr.Error())
 				}
+				// remove definitions amb move them to the root object
 				uAvro.OneOf = append(uAvro.OneOf, []byte(convertedMessage))
 			// Simple objects
 			case string:
@@ -71,7 +72,6 @@ func Parse(message *json.RawMessage) *errs.ParserError {
 					}
 					uAvro.OneOf = append(uAvro.OneOf, []byte(convertedMessage))
 				}
-
 				log.Printf("String %s", itemMap)
 			default:
 				log.Printf("I don't know about type %T!\n", o)

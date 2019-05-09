@@ -29,7 +29,7 @@ func NewMapAvro(attrType string) MapAvro {
 
 // NewComposeMapAvro creates a fixed avro depending on the type
 func NewComposeMapAvro(itemMap map[string]interface{}) ComposeMapAvro {
-	log.Printf("Map %v", itemMap)
+	log.Printf("Compose Map %v", itemMap)
 	var bAdditionaProperties json.RawMessage
 	bAdditionaProperties, err := json.Marshal(itemMap)
 	if err != nil {
@@ -45,7 +45,10 @@ func NewComposeMapAvro(itemMap map[string]interface{}) ComposeMapAvro {
 		bMAvro, _ := json.Marshal(mAvro)
 		cMAvro = ComposeMapAvro{Type: convertType("map"), Map: bMAvro}
 	} else {
-		cMAvro = ComposeMapAvro{Type: convertType("map"), Map: ref.Ref, Definitions: ref.Definitions}
+		cref := ref
+		cref.Definitions = nil
+		bRef, _ := json.Marshal(cref)
+		cMAvro = ComposeMapAvro{Type: convertType("map"), Map: bRef, Definitions: ref.Definitions}
 	}
 	return cMAvro
 }
