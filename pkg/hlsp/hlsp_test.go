@@ -139,5 +139,5 @@ func TestMalformedDoc(t *testing.T) {
     `)
 
 	_, err := Parse(asyncapi, true)
-	assert.Assert(t, is.Error(err, "error finding reference #/components/schemas/sentAt, check the format of your document please"))
+	assert.Assert(t, is.Error(err, "error finding references, check the format of your document please"))
 }
