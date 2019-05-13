@@ -2,12 +2,15 @@ package schemaparser
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/asyncapi/parser/pkg/schemaparser/avro"
 
 	"github.com/asyncapi/parser/pkg/errs"
 	"github.com/asyncapi/parser/pkg/models"
 	"github.com/asyncapi/parser/pkg/schemaparser/openapi"
 )
 
+//SchemaParser is the basic interface that schema parsers needs to implement
 type SchemaParser interface {
 	Parse(json.RawMessage) *errs.ParserError
 }
@@ -55,6 +58,14 @@ func parseMessage(message *models.Message) *errs.ParserError {
 	switch message.SchemaFormat {
 	case "", "openapi", "asyncapi", "application/vnd.oai.openapi", "application/vnd.asyncapi":
 		return openapi.OpenAPI{}.Parse(message)
+	case "avro":
+		bjson, err := json.Marshal(message)
+		if err != nil {
+			return errs.New(fmt.Sprintf("Error marshalling avro: %s", err))
+		}
+		rMessage := json.RawMessage(bjson)
+		return avro.Parse(&rMessage)
+
 	}
 
 	return nil
