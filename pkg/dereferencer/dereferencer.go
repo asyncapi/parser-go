@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"regexp"
 	"strings"
 	"unicode/utf8"
 )
@@ -65,6 +66,13 @@ func Dereference(document []byte, circularReferenceOption bool) (resolvedDoc []b
 		for k, v := range replacements {
 			key := fmt.Sprintf("{\"$ref\":\"%s\"}", k)
 			find := []byte(key)
+			isPresent, err := regexp.Match(key, document)
+			if err != nil {
+				return nil, err
+			}
+			if !isPresent {
+				return document, fmt.Errorf("error finding reference %s, check the format of your document please", k)
+			}
 			document = bytes.Replace(document, find, v.([]byte), -1)
 		}
 		var objmap map[string]interface{}

@@ -2,6 +2,7 @@ package hlsp
 
 import (
 	"encoding/json"
+
 	"github.com/asyncapi/parser/pkg/dereferencer"
 
 	"github.com/asyncapi/parser/pkg/models"
@@ -68,6 +69,9 @@ func ParseJSON(jsonDocument []byte, circularReferences bool) (json.RawMessage, *
 
 	if result.Valid() {
 		jsonDocument, err = dereferencer.Dereference(jsonDocument, circularReferences)
+		if err != nil {
+			return nil, errs.New(err.Error())
+		}
 		return jsonDocument, nil
 	}
 
