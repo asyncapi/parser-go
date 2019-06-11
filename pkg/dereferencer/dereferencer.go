@@ -87,6 +87,10 @@ func Dereference(document []byte, circularReferenceOption bool) (resolvedDoc []b
 			return nil, err
 		}
 		i++
+
+		if i >= 1000 {
+			return document, fmt.Errorf("error finding references, check the format of your document please")
+		}
 	}
 	resolvedDoc = document
 	return resolvedDoc, nil

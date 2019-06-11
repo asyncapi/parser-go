@@ -2,9 +2,10 @@ package dereferencer
 
 import (
 	"encoding/json"
-	"github.com/stretchr/objx"
 	"io/ioutil"
 	"strings"
+
+	"github.com/stretchr/objx"
 )
 
 type fileDereferencer struct {
