@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"strings"
 
+	"github.com/pkg/errors"
 	"github.com/stretchr/objx"
 )
 
@@ -21,12 +22,11 @@ func (fdef *fileDereferencer) Dereference(ref string, document []byte) (value []
 	}
 	path := strings.Split(strings.Trim(ref, "#"), "/")
 	element := m.Get(trimFirstRune(strings.Join(path, ".")))
-	// log.Printf("Obj %v \n", (*element).Data())
-	belement, err := json.Marshal((*element).Data())
-	if element != nil {
-		value = belement
+	if element == nil || (*element).Data() == nil {
+		return nil, errors.Errorf("element %q is not found", ref)
 	}
-	return value, nil
+
+	return json.Marshal((*element).Data())
 }
 
 func checkFile(filename string) (fileData []byte, ref string, err error) {
