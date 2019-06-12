@@ -7,6 +7,8 @@ import (
 	"log"
 	"strings"
 	"unicode/utf8"
+
+	"github.com/pkg/errors"
 )
 
 type dereferencer interface {
@@ -63,8 +65,7 @@ func Dereference(document []byte, circularReferenceOption bool) (resolvedDoc []b
 	for len(replacements) > 0 {
 		// Replace strings for its references
 		for k, v := range replacements {
-			key := fmt.Sprintf("{\"$ref\":\"%s\"}", k)
-			find := []byte(key)
+			find := []byte(fmt.Sprintf("{\"$ref\":\"%s\"}", k))
 			document = bytes.Replace(document, find, v.([]byte), -1)
 		}
 		var objmap map[string]interface{}
@@ -80,7 +81,7 @@ func Dereference(document []byte, circularReferenceOption bool) (resolvedDoc []b
 		if i%10 == 0 {
 			replacements, err = resolveCircular(oldReplacements, replacements, circularReferenceOption)
 			if err != nil {
-				return nil, err
+				return nil, errors.WithMessage(err, "failed to resolve circular references")
 			}
 		}
 		if err != nil {
@@ -121,53 +122,46 @@ func resolve(objmap map[string]interface{}, document []byte) (replacements map[s
 	replacements = make(map[string]interface{})
 	fDef := fileDereferencer{}
 	httpDef := httpDereferencer{}
+	var dv []byte
 	for _, v := range objmap {
 		eachJSONValue(&v, func(key *string, index *int, value *interface{}) {
 			if key != nil { // It's an object key/value pair...
 				if *key == "$ref" {
-					if strings.HasPrefix((*value).(string), inFileRef) {
-						dv, err := fDef.Dereference((*value).(string), document)
+					ref := (*value).(string)
+
+					if strings.HasPrefix(ref, inFileRef) {
+						dv, err = fDef.Dereference(ref, document)
+					} else if strings.HasPrefix(ref, httpRef) {
+						dv, ref, err = resolveURL(ref)
 						if err != nil {
-							log.Fatal(err)
+							log.Fatalf("failed to resolve URL: %v\n", err)
 						}
-						// TODO: Substitute obj for dereferencedValue(dv)
-						// or use this dvs to generate another document
-						replacements[(*value).(string)] = dv
-					} else if strings.HasPrefix((*value).(string), httpRef) {
-						urlData, ref, err := resolveURL((*value).(string))
-						if err != nil {
-							log.Fatal(err)
+						if ref != "" {
+							dv, err = httpDef.Dereference(ref, dv)
 						}
-						var dv []byte
-						if ref == "" {
-							dv, err = httpDef.Dereference((*value).(string), urlData)
-						} else {
-							dv, err = httpDef.Dereference(ref, urlData)
-						}
-						if err != nil {
-							log.Fatal(err)
-						}
-						replacements[(*value).(string)] = dv
 					} else {
-						fileData, ref, err := checkFile((*value).(string))
+						dv, ref, err = checkFile(ref)
 						if err != nil {
-							log.Fatal(err)
+							log.Fatalf("failed to check file: %v\n", err)
 						}
-						var dv []byte
-						if ref == "" {
-							dv, err = fDef.Dereference((*value).(string), fileData)
-						} else {
-							dv, err = fDef.Dereference(ref, fileData)
+						if ref != "" {
+							dv, err = fDef.Dereference(ref, dv)
 						}
-						if err != nil {
-							log.Fatal(err)
-						}
-						replacements[(*value).(string)] = dv
+					}
+
+					if err != nil {
+						log.Fatalf("failed to process reference %q: %v\n", (*value).(string), err)
+					}
+
+					//we have to marshal document back in order to be able to substitute reference "{\"$ref\":\"%s\"}"
+					//with the dereferenced document
+					replacements[(*value).(string)], err = json.Marshal(json.RawMessage(dv))
+					if err != nil {
+						log.Fatal(err)
 					}
 				}
 			}
 		})
-
 	}
 	return
 }

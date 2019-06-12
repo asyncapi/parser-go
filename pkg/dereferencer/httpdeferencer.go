@@ -2,11 +2,12 @@ package dereferencer
 
 import (
 	"encoding/json"
-	"github.com/stretchr/objx"
-	"github.com/xeipuuv/gojsonschema"
 	"io/ioutil"
 	"net/http"
 	"strings"
+
+	"github.com/pkg/errors"
+	"github.com/stretchr/objx"
 )
 
 type httpDereferencer struct {
@@ -18,36 +19,33 @@ type httpDereferencer struct {
 func (htpp *httpDereferencer) Dereference(ref string, document []byte) (value []byte, err error) {
 	m, err := objx.FromJSON(string(document))
 	if err != nil {
-		return nil, err
+		return nil, errors.Errorf("failed to create object from json %q: %v", string(document), err)
 	}
 	path := strings.Split(strings.Trim(ref, "#"), "/")
-	element := m.Get(trimFirstRune(strings.Join(path, ".")))
-	// log.Printf("Obj %v \n", (*element).Data())
-	belement, err := json.Marshal((*element).Data())
-	if element != nil {
-		value = belement
+
+	key := strings.Join(path, ".")
+
+	element := m.Get(trimFirstRune(key))
+	if element == nil || (*element).Data() == nil {
+		return nil, errors.Errorf("element %q is not found", ref)
 	}
-	return value, nil
+
+	return json.Marshal((*element).Data())
 }
 
 func resolveURL(url string) (URLData []byte, ref string, err error) {
 	paths := strings.Split(url, "#")
+	if len(paths) >= 2 {
+		ref = paths[1]
+	}
+
 	resp, err := http.Get(paths[0])
 	if err != nil {
-		return nil, "", err
+		return nil, ref, err
 	}
 	defer resp.Body.Close()
+
 	URLData, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, "", err
-	}
-	schemaLoader := gojsonschema.NewBytesLoader(URLData)
-	documentLoader := gojsonschema.NewBytesLoader(URLData)
-	result, err := gojsonschema.Validate(schemaLoader, documentLoader)
 
-	if result.Valid() {
-		return URLData, paths[1], nil
-	}
-
-	return nil, paths[1], err
+	return URLData, ref, err
 }
