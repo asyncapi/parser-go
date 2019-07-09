@@ -167,6 +167,209 @@ func getJSONSchemaForTest() []byte {
 `)
 }
 
+
+func getComplexAvro1ForTest()[]byte {
+	return []byte(`
+	{
+		"type": "record",
+		"name": "XtmProjectCompletion",
+		"namespace": "com.pimpam.tapi.catalog.avro",
+		"fields": [
+		  {
+			"name": "projectId",
+			"type": [
+			  "null",
+			  "long"
+			],
+			"default": null
+		  },
+		  {
+			"name": "customerId",
+			"type": [
+			  "null",
+			  "long"
+			],
+			"default": null
+		  },
+		  {
+			"name": "status",
+			"type": [
+			  "null",
+			  {
+				"type": "string",
+				"avro.java.string": "String"
+			  }
+			],
+			"default": null
+		  }
+		]
+	  }
+	`)
+}
+
+func getComplexAvro2ForTest()[]byte {
+	return []byte(`
+	{
+		"type": "record",
+		"name": "KVMEventValue",
+		"namespace": "com.pimpam.pc.parido.dto",
+		"doc": "Handle event changes from KVM consumer",
+		"fields": [
+		  {
+			"name": "metadata",
+			"type": {
+			  "type": "record",
+			  "name": "SimpleEventMetadata",
+			  "fields": [
+				{
+				  "name": "eventVersion",
+				  "type": "string",
+				  "doc": "Version of this event"
+				},
+				{
+				  "name": "eventSource",
+				  "type": "string",
+				  "doc": "Source application event"
+				},
+				{
+				  "name": "eventName",
+				  "type": "string",
+				  "doc": "Type of event (DELETE,UPDATE)"
+				},
+				{
+				  "name": "eventTime",
+				  "type": "string",
+				  "doc": "Event time"
+				}
+			  ]
+			}
+		  },
+		  {
+			"name": "payload",
+			"type": {
+			  "type": "record",
+			  "name": "KVMEventPayload",
+			  "fields": [
+				{
+				  "name": "vendorCode",
+				  "type": "string",
+				  "doc": "VendorCode identifier"
+				}
+			  ]
+			}
+		  }
+		]
+	  }
+	`)
+}
+
+func getComplexAvro3ForTest()[]byte {
+	return []byte(`
+	{
+		"type": "record",
+		"name": "WorkerEvent",
+		"namespace": "com.pimpam.resource.feed.schema",
+		"fields": [
+		  {
+			"name": "generationId",
+			"type": {
+			  "type": "string",
+			  "avro.java.string": "String"
+			}
+		  },
+		  {
+			"name": "locale",
+			"type": [
+			  "null",
+			  {
+				"type": "string",
+				"avro.java.string": "String"
+			  }
+			],
+			"default": null
+		  },
+		  {
+			"name": "brand",
+			"type": [
+			  "null",
+			  {
+				"type": "string",
+				"avro.java.string": "String"
+			  }
+			],
+			"default": null
+		  },
+		  {
+			"name": "flow",
+			"type": [
+			  "null",
+			  {
+				"type": "string",
+				"avro.java.string": "String"
+			  }
+			],
+			"default": null
+		  },
+		  {
+			"name": "migrationType",
+			"type": {
+			  "type": "string",
+			  "avro.java.string": "String"
+			}
+		  },
+		  {
+			"name": "executionStatus",
+			"type": [
+			  "null",
+			  {
+				"type": "string",
+				"avro.java.string": "String"
+			  }
+			],
+			"default": null
+		  },
+		  {
+			"name": "feedException",
+			"type": [
+			  "null",
+			  {
+				"type": "record",
+				"name": "WorkerFeedException",
+				"fields": [
+				  {
+					"name": "exceptionDate",
+					"type": "long"
+				  },
+				  {
+					"name": "exceptionMessage",
+					"type": [
+					  "null",
+					  {
+						"type": "string",
+						"avro.java.string": "String"
+					  }
+					],
+					"default": null
+				  },
+				  {
+					"name": "exceptionCode",
+					"type": {
+					  "type": "string",
+					  "avro.java.string": "String"
+					}
+				  }
+				]
+			  }
+			],
+			"default": null
+		  }
+		]
+	  }
+	`)
+}
+
+
+
 func TestAvro2Json(t *testing.T) {
 	avroSchema := getAvroSchemaForTest()
 	codec, err := goavro.NewCodec(string(avroSchema))
