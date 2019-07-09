@@ -2,7 +2,9 @@ package dereferencer
 
 import (
 	"encoding/json"
+	"github.com/ghodss/yaml"
 	"io/ioutil"
+	"log"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -35,5 +37,10 @@ func checkFile(filename string) (fileData []byte, ref string, err error) {
 	if err != nil {
 		return nil, "", err
 	}
-	return fileData, paths[1], nil
+	jsonFileData, err := yaml.YAMLToJSON(fileData)
+	if err != nil {
+		return nil, "", err
+	}
+	log.Printf("JSON FILE %s", string(jsonFileData))
+	return jsonFileData, paths[1], nil
 }
