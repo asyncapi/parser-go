@@ -1,0 +1,27 @@
+{
+  "payload": {
+    "additionalProperties": {
+      "type": [
+        "null"
+      ]
+    },
+    "type": [
+      "null"
+    ],
+    "properties": {
+      "test": {
+        "type": [
+          "null"
+        ]
+      }
+    },
+    "examples": [
+      {
+        "test": "example0"
+      },
+      {
+        "test": "example1"
+      }
+    ]
+  }
+}

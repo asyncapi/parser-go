@@ -1,0 +1,21 @@
+{
+  "payload": {
+    "nullable": true,
+    "example": {
+      "test": "example1"
+    },
+    "examples": [
+      {
+        "test": "example0"
+      }
+    ],
+    "properties": {
+      "test": {
+        "nullable": true
+      }
+    },
+    "additionalProperties": {
+      "nullable": true
+    }
+  }
+}

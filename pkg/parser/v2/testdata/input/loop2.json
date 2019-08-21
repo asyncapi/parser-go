@@ -1,0 +1,43 @@
+{
+  "id": "urn:com:smartylighting:streetlights:server",
+  "info": {
+    "version": "1.0.0", 
+    "title": "AnyOf example with circular dependencies"
+  }, 
+  "channels": {
+    "test": {
+      "publish": {
+        "message": {
+          "$ref": "#/components/messages/testMessages"
+        }
+      }
+    }
+  },
+  "asyncapi": "2.0.0-rc1", 
+  "components": {
+    "messages": {
+      "testMessages": {
+        "payload": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/objectWithKey"
+            },
+            {
+              "$ref": "#/components/messages/testMessages/payload"
+            }
+          ]
+        }
+      }
+    },
+    "schemas": {
+      "objectWithKey": {
+        "type": "object", 
+        "properties": {
+          "key": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

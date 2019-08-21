@@ -1,0 +1,47 @@
+{
+  "payload": {
+    "additionalProperties": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "examples": [
+        "fromTestArrayInAP",
+        "test2"
+      ]
+    },
+    "type": [
+      "object",
+      "null"
+    ],
+    "properties": {
+      "example": {
+        "description": "this should not be affected"
+      },
+      "test": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "examples": [
+          "fromTestArrayInProperties",
+          "test"
+        ]
+      },
+      "test2": {
+        "type": [
+          "number",
+          "null"
+        ]
+      }
+    },
+    "examples": [
+      {
+        "test": "example0"
+      },
+      {
+        "test": "example1"
+      }
+    ]
+  }
+}
