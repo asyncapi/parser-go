@@ -2,7 +2,7 @@ package v2
 
 var schema = []byte(`
 {
-    "title": "OpenAPI/AsyncAPI schema.",
+    "title": "OpenAPI schema",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "description": "A deterministic version of a JSON Schema object.",
     "type": "object",

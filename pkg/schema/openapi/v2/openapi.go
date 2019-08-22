@@ -3,7 +3,7 @@ package v2
 import (
 	parserErrors "github.com/asyncapi/parser/pkg/error"
 	parserSchema "github.com/asyncapi/parser/pkg/schema"
-	"github.com/asyncapi/parser/pkg/schema/jsonscheme/draft07"
+	"github.com/asyncapi/parser/pkg/schema/jsonschema/draft07"
 
 	"github.com/pkg/errors"
 

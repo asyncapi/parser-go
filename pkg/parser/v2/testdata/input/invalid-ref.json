@@ -20,7 +20,7 @@
         "payload": {
           "anyOf": [
             {
-              "$ref": "#/components/schemas/invalid-reference"
+              "$ref": "#/components/schemas/missing-reference"
             }
           ]
         }
