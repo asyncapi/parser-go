@@ -60,7 +60,7 @@ func BuildMessageProcessor(dispatcher Dispatcher) func(*map[string]interface{}) 
 				errs = append(errs, err)
 			}
 		}
-		return nil
+		return parserErrors.New(errs...)
 	}
 }
 

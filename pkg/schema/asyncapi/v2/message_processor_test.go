@@ -1,10 +1,10 @@
 package v2
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
 	. "github.com/onsi/gomega"
-
-	"encoding/json"
 	"os"
 	"testing"
 )
@@ -117,11 +117,31 @@ func Test_extractMessages(t *testing.T) {
 				g.Expect(err).Should(HaveOccurred())
 				return
 			}
-			//b, _ := json.Marshal(got)
-			//t.Log(string(b))
 			g.Expect(got).To(Equal(expectedMsgs))
 		})
 	}
+}
+
+func TestBuildMessageProcessor(t *testing.T) {
+	g := NewWithT(t)
+	testErr := errors.New("test error")
+	d := Dispatcher{
+		"test1": func(_ interface{}) error {
+			return nil
+		},
+		"test2": func(_ interface{}) error {
+			return testErr
+		},
+	}
+	var document *map[string]interface{}
+	docPath := "./testdata/given/anyofdoc.json"
+	err := load(docPath, &document, t)
+	if err != nil {
+		panic(fmt.Sprintf("invalid test data in: '%s'", docPath))
+	}
+	processMessages := BuildMessageProcessor(d)
+	err = processMessages(document)
+	g.Expect(err).Should(HaveOccurred())
 }
 
 func load(path string, v interface{}, t *testing.T) error {

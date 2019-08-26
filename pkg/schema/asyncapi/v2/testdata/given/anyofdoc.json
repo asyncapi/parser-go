@@ -1,0 +1,129 @@
+{
+  "asyncapi": "2.0.0-rc2",
+  "channels": {
+    "test": {
+      "publish": {
+        "message": {
+          "schemaFormat": "test1",
+          "payload": {
+            "oneOf": [
+              {
+                "properties": {
+                  "key": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              {
+                "properties": {
+                  "key2": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "test2": {
+      "subscribe": {
+        "message": {
+          "oneOf": [
+            {
+              "schemaFormat": "test2",
+              "payload": {
+                "properties": {
+                  "key": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            },
+            {
+              "payload": {
+                "properties": {
+                  "key2": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "components": {
+    "messages": {
+      "testMessage1": {
+        "payload": {
+          "properties": {
+            "key": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "testMessage2": {
+        "payload": {
+          "properties": {
+            "key2": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "testMessages": {
+        "payload": {
+          "oneOf": [
+            {
+              "properties": {
+                "key": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "properties": {
+                "key2": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      }
+    },
+    "schemas": {
+      "objectWithKey": {
+        "properties": {
+          "key": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "objectWithKey2": {
+        "properties": {
+          "key2": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "OneOf example",
+    "version": "1.0.0"
+  }
+}
