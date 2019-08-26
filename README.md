@@ -9,7 +9,7 @@ If you use the parser as a package, you can also register external schemas. For 
 
 Documents provided for the AsyncAPI Parser can be in the `.yaml` or `.json` formats. If a document is invalid, the parser provides a message listing all errors. If a document is valid, the parser provides dereferenced output. During the dereference process the AsyncAPI parser substitutes a reference with a full definition. The dereferenced output is always in the `.json` format.
 ## Prerequisites
-- [Golang](https://golang.org/dl/) version 1.11+
+- [Golang](https://golang.org/dl/) version 1.12+
 ## Installation
 To install the AsyncAPI Parser package, run:
 ```bash
