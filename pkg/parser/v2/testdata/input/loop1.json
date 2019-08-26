@@ -1,9 +1,9 @@
 {
   "id": "urn:com:smartylighting:streetlights:server",
   "info": {
-    "version": "1.0.0", 
+    "version": "1.0.0",
     "title": "this should be handled by jsonschema parser"
-  }, 
+  },
   "channels": {
     "test": {
       "publish": {
@@ -12,8 +12,8 @@
         }
       }
     }
-  }, 
-  "asyncapi": "2.0.0-rc1", 
+  },
+  "asyncapi": "2.0.0-rc2",
   "components": {
     "messages": {
       "testMessages": {
@@ -25,10 +25,10 @@
           ]
         }
       }
-    }, 
+    },
     "schemas": {
       "objectWithKey2": {
-        "type": "object", 
+        "type": "object",
         "properties": {
           "$ref": "#/components/schemas/objectWithKey2"
         }

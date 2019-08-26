@@ -1,5 +1,5 @@
 {
-    "asyncapi": "2.0.0-rc1",
+    "asyncapi": "2.0.0-rc2",
     "id": "urn:com:smartylighting:streetlights:server",
     "x-something": {
         "keise": true

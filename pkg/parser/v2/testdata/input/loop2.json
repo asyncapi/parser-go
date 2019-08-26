@@ -1,9 +1,9 @@
 {
   "id": "urn:com:smartylighting:streetlights:server",
   "info": {
-    "version": "1.0.0", 
+    "version": "1.0.0",
     "title": "AnyOf example with circular dependencies"
-  }, 
+  },
   "channels": {
     "test": {
       "publish": {
@@ -13,7 +13,7 @@
       }
     }
   },
-  "asyncapi": "2.0.0-rc1", 
+  "asyncapi": "2.0.0-rc2",
   "components": {
     "messages": {
       "testMessages": {
@@ -31,7 +31,7 @@
     },
     "schemas": {
       "objectWithKey": {
-        "type": "object", 
+        "type": "object",
         "properties": {
           "key": {
             "type": "string"
