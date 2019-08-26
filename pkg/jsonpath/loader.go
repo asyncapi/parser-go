@@ -29,6 +29,7 @@ func (l RefLoader) fileLoader(path string) (map[string]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer file.Close()
 	return decode.ToMap(file)
 }
 
