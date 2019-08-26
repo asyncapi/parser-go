@@ -53,12 +53,12 @@ See the following examples of the AsyncAPI Parser usage in the terminal:
 ## Contribution
 If you have a feature request, add it as an issue or propose changes in a pull request (PR).
 If you create a feature request, use the dedicated **Feature request** issue template. When you create a PR, follow the contributing rules described in the [`CONTRIBUTING.md`](CONTRIBUTING.md) document.
+## Roadmap
+- `avro` schema support
+- extensions support
+- json-schema `$id` property support
 ## Credits
 - Fran Mendez
 - Raisel Melian
 - Ruben Hervas
-<p align="center">
- <a href="https://kyma-project.io/" target="_blank">
-  <img src="https://raw.githubusercontent.com/kyma-project/kyma/master/logo.png" width="235">
- </a>
-</p>
+- Marcin Witalis from [Kyma](https://kyma-project.io/)
