@@ -1,10 +1,11 @@
 package v2
 
 import (
+	. "github.com/onsi/gomega"
+
 	"encoding/json"
 	"errors"
 	"fmt"
-	. "github.com/onsi/gomega"
 	"os"
 	"testing"
 )
