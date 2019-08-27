@@ -1,0 +1,24 @@
+{
+  "publish": {
+    "message": {
+      "oneOf": [
+        {
+          "properties": {
+            "key": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        {
+          "properties": {
+            "key2": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        }
+      ]
+    }
+  }
+}

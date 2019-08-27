@@ -1,0 +1,41 @@
+{
+  "payload": {
+    "type": "object",
+    "nullable": true,
+    "example": {
+      "test": "example1"
+    },
+    "examples": [
+      {
+        "test": "example0"
+      }
+    ],
+    "properties": {
+      "test": {
+        "type": "string",
+        "nullable": true,
+        "example": "test",
+        "examples": [
+          "fromTestArrayInProperties"
+        ]
+      },
+      "test2": {
+        "type": [
+          "number"
+        ],
+        "nullable": true
+      },
+      "example": {
+        "description": "this should not be affected"
+      }
+    },
+    "additionalProperties": {
+      "type": "number",
+      "nullable": true,
+      "example": "test2",
+      "examples": [
+        "fromTestArrayInAP"
+      ]
+    }
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "asyncapi": "2.0.0-rc2",
+  "channels": {
+    "test": {
+      "publish": {
+        "message": {
+          "payload": {
+            "anyOf": [
+              {
+                "properties": {
+                  "key": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              {
+                "properties": {
+                  "key2": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "messages": {
+      "testMessages": {
+        "payload": {
+          "anyOf": [
+            {
+              "properties": {
+                "key": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "properties": {
+                "key2": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ]
+        }
+      }
+    },
+    "schemas": {
+      "objectWithKey": {
+        "properties": {
+          "key": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "objectWithKey2": {
+        "properties": {
+          "key2": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "id": "urn:com:smartylighting:streetlights:server",
+  "info": {
+    "title": "AnyOf example",
+    "version": "1.0.0"
+  }
+}

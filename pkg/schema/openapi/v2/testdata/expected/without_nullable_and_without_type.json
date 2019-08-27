@@ -1,0 +1,20 @@
+{
+  "payload": {
+    "additionalProperties": {
+      "description": "test"
+    },
+    "properties": {
+      "test": {
+        "description": "hello"
+      }
+    },
+    "examples": [
+      {
+        "test": "example0"
+      },
+      {
+        "test": "example1"
+      }
+    ]
+  }
+}
