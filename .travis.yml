@@ -15,7 +15,7 @@ script:
 
 deploy:
   provider: releases
-  api_key: $GITHUB_TOKEN
+  api_key: $GH_TOKEN
   file:
     - api-parser.darwin.amd64
     - api-parser.linux.amd64
