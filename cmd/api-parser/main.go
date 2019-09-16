@@ -2,14 +2,15 @@ package main
 
 import (
 	"fmt"
-	"github.com/asyncapi/parser/internal/cli"
 	"log"
 	"os"
+
+	"github.com/asyncapi/parser/internal/cli"
 
 	"github.com/docopt/docopt-go"
 )
 
-const version = "asyncapi-parser 0.1.0-rc2"
+const version = "asyncapi-parser 0.2"
 
 func main() {
 	usage := fmt.Sprintf(`
@@ -21,7 +22,7 @@ func main() {
 		
   Arguments:
 	PATH  a path to asyncapi document (either url or local file, supports json and yaml format)`,
-		"2.0.0-rc2")
+		"2.0.0")
 
 	opts, err := docopt.ParseArgs(usage, nil, version)
 	if err != nil {
