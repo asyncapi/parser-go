@@ -35,6 +35,11 @@ func TestParse(t *testing.T) {
 			msg:      "./testdata/given/parse_without_examples.json",
 			expected: "./testdata/expected/parse_without_examples.json",
 		},
+		{
+			name:     "check additionalProperties",
+			msg:      "./testdata/given/slack.json",
+			expected: "./testdata/expected/slack.json",
+		},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
