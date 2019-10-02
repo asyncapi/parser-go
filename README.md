@@ -53,7 +53,7 @@ You can use the AsyncAPI Parser in two ways:
 - Validation of the `gitter-streaming.yaml` valid file:
 
   ```text
-  asyncapi-parser https://raw.githubusercontent.com/asyncapi/asyncapi/master/examples/next/gitter-streaming.yml
+  asyncapi-parser https://raw.githubusercontent.com/asyncapi/asyncapi/master/examples/2.0.0/gitter-streaming.yml
   ```
 
 - Validation of the `oneof.yml` invalid file:
