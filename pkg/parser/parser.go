@@ -1,9 +1,9 @@
 package parser
 
 import (
-	"github.com/asyncapi/parser/pkg/decode"
-	"github.com/asyncapi/parser/pkg/jsonpath"
-	hlsp "github.com/asyncapi/parser/pkg/parser/v2"
+	"github.com/asyncapi/parser-go/pkg/decode"
+	"github.com/asyncapi/parser-go/pkg/jsonpath"
+	hlsp "github.com/asyncapi/parser-go/pkg/parser/v2"
 
 	"encoding/json"
 	"io"

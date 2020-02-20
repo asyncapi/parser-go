@@ -1,7 +1,7 @@
 package jsonpath
 
 import (
-	"github.com/asyncapi/parser/pkg/decode"
+	"github.com/asyncapi/parser-go/pkg/decode"
 
 	"net/http"
 	"os"

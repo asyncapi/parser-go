@@ -1,10 +1,10 @@
 package cli
 
 import (
-	"github.com/asyncapi/parser/pkg/parser"
-	"github.com/asyncapi/parser/pkg/schema"
-	asyncapi "github.com/asyncapi/parser/pkg/schema/asyncapi/v2"
-	openapi "github.com/asyncapi/parser/pkg/schema/openapi/v2"
+	"github.com/asyncapi/parser-go/pkg/parser"
+	"github.com/asyncapi/parser-go/pkg/schema"
+	asyncapi "github.com/asyncapi/parser-go/pkg/schema/asyncapi/v2"
+	openapi "github.com/asyncapi/parser-go/pkg/schema/openapi/v2"
 
 	"github.com/docopt/docopt-go"
 	"github.com/pkg/errors"

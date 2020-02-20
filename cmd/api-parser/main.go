@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/asyncapi/parser/internal/cli"
+	"github.com/asyncapi/parser-go/internal/cli"
 
 	"github.com/docopt/docopt-go"
 )

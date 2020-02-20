@@ -1,8 +1,8 @@
 package v2
 
 import (
-	"github.com/asyncapi/parser/pkg/decode"
-	"github.com/asyncapi/parser/pkg/jsonpath"
+	"github.com/asyncapi/parser-go/pkg/decode"
+	"github.com/asyncapi/parser-go/pkg/jsonpath"
 	. "github.com/onsi/gomega"
 
 	"fmt"

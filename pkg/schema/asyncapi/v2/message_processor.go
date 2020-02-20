@@ -1,7 +1,7 @@
 package v2
 
 import (
-	parserErrors "github.com/asyncapi/parser/pkg/error"
+	parserErrors "github.com/asyncapi/parser-go/pkg/error"
 
 	"github.com/pkg/errors"
 
