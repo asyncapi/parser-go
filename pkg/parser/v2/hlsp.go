@@ -1,9 +1,9 @@
 package v2
 
 import (
-	parserErrors "github.com/asyncapi/parser/pkg/error"
-	"github.com/asyncapi/parser/pkg/jsonpath"
-	"github.com/asyncapi/parser/pkg/schema/asyncapi/v2"
+	parserErrors "github.com/asyncapi/parser-go/pkg/error"
+	"github.com/asyncapi/parser-go/pkg/jsonpath"
+	"github.com/asyncapi/parser-go/pkg/schema/asyncapi/v2"
 
 	"github.com/pkg/errors"
 )

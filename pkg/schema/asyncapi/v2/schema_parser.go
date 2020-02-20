@@ -1,6 +1,6 @@
 package v2
 
-import parseSchema "github.com/asyncapi/parser/pkg/schema"
+import parseSchema "github.com/asyncapi/parser-go/pkg/schema"
 
 var (
 	parser = parseSchema.NewParser(schema)

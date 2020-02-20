@@ -1,9 +1,9 @@
 package v2
 
 import (
-	parserErrors "github.com/asyncapi/parser/pkg/error"
-	parserSchema "github.com/asyncapi/parser/pkg/schema"
-	"github.com/asyncapi/parser/pkg/schema/jsonschema/draft07"
+	parserErrors "github.com/asyncapi/parser-go/pkg/error"
+	parserSchema "github.com/asyncapi/parser-go/pkg/schema"
+	"github.com/asyncapi/parser-go/pkg/schema/jsonschema/draft07"
 
 	"github.com/pkg/errors"
 

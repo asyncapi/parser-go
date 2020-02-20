@@ -22,7 +22,7 @@ Documents provided for the AsyncAPI Parser can be in the `.yaml` or `.json` form
 To install the AsyncAPI Parser package, run:
 
 ```bash
-go get github.com/asyncapi/parser/...
+go get github.com/asyncapi/parser-go/...
 ```
 
 ## Usage

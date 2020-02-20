@@ -1,4 +1,4 @@
-module github.com/asyncapi/parser
+module github.com/asyncapi/parser-go
 
 go 1.12
 

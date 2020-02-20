@@ -1,7 +1,7 @@
 package schema
 
 import (
-	parserErrors "github.com/asyncapi/parser/pkg/error"
+	parserErrors "github.com/asyncapi/parser-go/pkg/error"
 
 	"github.com/pkg/errors"
 	"github.com/xeipuuv/gojsonschema"
