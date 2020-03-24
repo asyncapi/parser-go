@@ -15,7 +15,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
-      - uses: actions/setup-go@v1.1.2
+      - name: invoking go test
+        uses: actions/setup-go@v1.1.2
         with:
           go-version: '${{ matrix.go }}'
       - run: go test ./...
@@ -28,7 +29,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
-      - uses: actions/setup-go@v1.1.2
+      - name: Invoking go vet and binaries generation
+        uses: actions/setup-go@v1.1.2
         with:
           go-version: '1.14'
       - run: |
