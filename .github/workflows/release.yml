@@ -33,10 +33,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 13
-      - name: Add dependency for conventional commits
+      - name: Add plugin for conventional commits
         run: npm install conventional-changelog-conventionalcommits
       - name: Release to GitHub
-        id: release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           GIT_AUTHOR_NAME: asyncapi-bot
