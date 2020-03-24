@@ -25,7 +25,7 @@ To install the AsyncAPI Parser package, run:
 go get github.com/asyncapi/parser-go/...
 ```
 
-> You can also get binaries from the latest GitHub release https://github.com/asyncapi/parser-go/releases/latest
+> **TIP:** You can also get binaries from the [latest GitHub release](https://github.com/asyncapi/parser-go/releases/latest).
 
 ## Usage
 
