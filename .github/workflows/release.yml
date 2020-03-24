@@ -33,6 +33,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 13
+      - name: Add dependency for conventional commits
+        run: npm install conventional-changelog-conventionalcommits
       - name: Release to GitHub
         id: release
         env:
