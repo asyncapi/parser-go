@@ -38,6 +38,7 @@ jobs:
           GOOS=darwin GOARCH=amd64 go build -o=asyncapi-parser.darwin.amd64 ./cmd/api-parser/main.go
           GOOS=linux GOARCH=amd64 go build -o=asyncapi-parser.linux.amd64 ./cmd/api-parser/main.go
           GOOS=windows GOARCH=amd64 go build -o=asyncapi-parser.windows.amd64.exe ./cmd/api-parser/main.go
+          ls
   
   release:
     name: 'Release to GitHub'
@@ -63,4 +64,6 @@ jobs:
           GIT_AUTHOR_EMAIL: info@asyncapi.io
           GIT_COMMITTER_NAME: asyncapi-bot
           GIT_COMMITTER_EMAIL: info@asyncapi.io
-        run: npx semantic-release
+        run: |
+          ls
+          npx semantic-release
