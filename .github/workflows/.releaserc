@@ -14,8 +14,3 @@ plugins:
       label: Binary - Linux AMD64
     - path: asyncapi-parser.windows.amd64.exe
       label: Binary - Windows AMD64
-
-
-
-      
-      

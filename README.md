@@ -71,7 +71,6 @@ You can use the AsyncAPI Parser in two ways:
   asyncapi: asyncapi must be one of the following: "2.0.0"
   ```
 
-
 ## Contribution
 
 If you have a feature request, add it as an issue or propose changes in a pull request (PR).
