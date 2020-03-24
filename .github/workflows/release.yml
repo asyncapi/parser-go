@@ -40,9 +40,9 @@ jobs:
       - name: Invoking go vet and binaries generation
         run: |
           go vet ./...
-          GOOS=darwin GOARCH=amd64 go build -o=asyncapi-parser.darwin.amd64 ./cmd/api-parser/main.go
-          GOOS=linux GOARCH=amd64 go build -o=asyncapi-parser.linux.amd64 ./cmd/api-parser/main.go
-          GOOS=windows GOARCH=amd64 go build -o=asyncapi-parser.windows.amd64.exe ./cmd/api-parser/main.go
+          GOOS=darwin GOARCH=amd64 go build -o=.github/workflows/asyncapi-parser.darwin.amd64 ./cmd/api-parser/main.go
+          GOOS=linux GOARCH=amd64 go build -o=.github/workflowsasyncapi-parser.linux.amd64 ./cmd/api-parser/main.go
+          GOOS=windows GOARCH=amd64 go build -o=.github/workflows/asyncapi-parser.windows.amd64.exe ./cmd/api-parser/main.go
   
   release:
     name: 'Release to GitHub'
