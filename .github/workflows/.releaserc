@@ -1,0 +1,16 @@
+---
+branches:
+- master
+plugins:
+- - "@semantic-release/commit-analyzer"
+  - preset: conventionalcommits
+- - "@semantic-release/release-notes-generator"
+  - preset: conventionalcommits
+- - "@semantic-release/github"
+  - assets:
+    - path: asyncapi-parser.darwin.amd64
+      label: Binary - Darwin AMD64
+    - path: asyncapi-parser.linux.amd64
+      label: Binary - Linux AMD64
+    - path: asyncapi-parser.windows.amd64.exe
+      label: Binary - Windows AMD64
