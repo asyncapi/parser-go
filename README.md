@@ -1,6 +1,6 @@
 # AsyncAPI Parser
 
-[![Build Status](https://godoc.org/github.com/asyncapi/parser?status.svg)](https://godoc.org/github.com/asyncapi/parser) [![Build Status](https://travis-ci.org/asyncapi/parser.svg?branch=master)](https://travis-ci.org/asyncapi/parser) [![Go Report Card](https://goreportcard.com/badge/github.com/asyncapi/parser)](https://goreportcard.com/report/github.com/asyncapi/parser)
+[![Go Doc](https://godoc.org/github.com/asyncapi/parser?status.svg)](https://godoc.org/github.com/asyncapi/parser) ![Release](https://github.com/asyncapi/parser-go/workflows/Release/badge.svg) [![Go Report Card](https://goreportcard.com/badge/github.com/asyncapi/parser)](https://goreportcard.com/report/github.com/asyncapi/parser)
 
 ## Overview
 
