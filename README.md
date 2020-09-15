@@ -13,6 +13,8 @@ The AsyncAPI Parser validates AsyncAPI documents according to dedicated schemas.
 
 Documents provided for the AsyncAPI Parser can be in the `.yaml` or `.json` formats. If a document is invalid, the parser provides a message listing all errors. If a document is valid, the parser provides dereferenced output. During the dereference process the AsyncAPI parser substitutes a reference with a full definition. The dereferenced output is always in the `.json` format.
 
+> :warning: This package doesn't support AsyncAPI 1.x anymore. We recommend to upgrade to the latest AsyncAPI version using the [AsyncAPI converter](https://github.com/asyncapi/converter-js). If you need to convert documents on the fly, you may use the [Node.js](https://github.com/asyncapi/converter-js) or [Go](https://github.com/asyncapi/converter-go) converters.
+
 ## Prerequisites
 
 - [Golang](https://golang.org/dl/) version 1.12+
