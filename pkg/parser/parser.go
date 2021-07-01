@@ -121,8 +121,7 @@ func New() (Parser, error) {
 		}
 	}
 
-	var messageProcessor MessageProcessor
-	messageProcessor = asyncapi.BuildMessageProcessor(d)
+	messageProcessor := MessageProcessor(asyncapi.BuildMessageProcessor(d))
 	parser := messageProcessor.BuildParser(func(encoder *json.Encoder) error {
 		encoder.SetIndent("", "  ")
 		return nil

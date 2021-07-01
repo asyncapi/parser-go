@@ -31,7 +31,9 @@ func TestMessageProcessor_BuildParser(t *testing.T) {
 func TestNewReader(t *testing.T) {
 	dir, filename := filepath.Split(oneOfJSONFile)
 	http.Handle("/", http.FileServer(http.Dir(dir)))
-	go http.ListenAndServe(":3001", nil)
+	go func() {
+		_ = http.ListenAndServe(":3001", nil)
+	}()
 
 	tests := []struct {
 		name string
