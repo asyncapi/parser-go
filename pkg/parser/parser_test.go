@@ -61,10 +61,3 @@ func TestNewReader(t *testing.T) {
 		})
 	}
 }
-
-func TestNew(t *testing.T) {
-	g := NewWithT(t)
-	p, err := New()
-	g.Expect(err).ShouldNot(HaveOccurred())
-	g.Expect(p).ShouldNot(BeNil())
-}

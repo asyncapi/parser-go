@@ -1,12 +1,53 @@
 package v2
 
-import parseSchema "github.com/asyncapi/parser-go/pkg/schema"
+import (
+	"fmt"
 
-var (
-	parser = parseSchema.NewParser(schema)
-	Labels = []string{"asyncapi"}
+	"github.com/pkg/errors"
+
+	parseSchema "github.com/asyncapi/parser-go/pkg/schema"
+	schemas "github.com/asyncapi/spec-json-schemas"
 )
 
+var (
+	Labels  = []string{"asyncapi"}
+	parsers = make(map[string]*parseSchema.Parser)
+)
+
+// Parse parsers a document.
 func Parse(v interface{}) error {
-	return parser.Parse(v)
+	version, err := extractVersion(v)
+	if err != nil {
+		return errors.Wrap(err, "error extracting AsyncAPI Spec version from provided document")
+	}
+
+	if parsers[version] == nil {
+		s, err := schemas.Get(version)
+		if err != nil {
+			return err
+		}
+
+		if s == nil {
+			return fmt.Errorf("version %q is not supported", version)
+		}
+
+		p := parseSchema.NewParser(s) // TODO return pointer
+		parsers[version] = &p
+	}
+
+	return parsers[version].Parse(v)
+}
+
+func extractVersion(v interface{}) (string, error) {
+	switch doc := v.(type) {
+	case *map[string]interface{}:
+		d := *doc // TODO fix unnecessary pointer indirection from the root
+		if d["asyncapi"] == nil {
+			return "", errors.New("the `asyncapi` field is missing")
+		}
+
+		return d["asyncapi"].(string), nil
+	default:
+		return "", errors.New("only *map[string]interface{} type is supported")
+	}
 }
