@@ -39,14 +39,13 @@ func Parse(v interface{}) error {
 
 func extractVersion(v interface{}) (string, error) {
 	switch doc := v.(type) {
-	case *map[string]interface{}:
-		d := *doc // TODO fix unnecessary pointer indirection from the root
-		if d["asyncapi"] == nil {
+	case map[string]interface{}:
+		if doc["asyncapi"] == nil {
 			return "", errors.New("the `asyncapi` field is missing")
 		}
 
-		return d["asyncapi"].(string), nil
+		return doc["asyncapi"].(string), nil
 	default:
-		return "", errors.New("only *map[string]interface{} type is supported")
+		return "", errors.New("only map[string]interface{} type is supported")
 	}
 }

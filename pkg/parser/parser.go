@@ -19,7 +19,7 @@ import (
 // Parser parses an AsyncAPI document.
 type Parser = func(io.Reader, io.Writer) error
 
-type MessageProcessor func(*map[string]interface{}) error
+type MessageProcessor func(map[string]interface{}) error
 
 type EncoderOpts func(*json.Encoder) error
 
@@ -35,12 +35,12 @@ func (mp MessageProcessor) BuildParser(encoderOpts ...EncoderOpts) Parser {
 		// parse asyncapi schema
 		refLoader := jsonpath.NewRefLoader(http.DefaultClient)
 		hlsParser := hlsp.NewParser(refLoader, "#/components/schemas")
-		err = hlsParser.Parse(&jsonData)
+		err = hlsParser.Parse(jsonData)
 		if err != nil {
 			return err
 		}
 		// parse supported schemas
-		err = mp(&jsonData)
+		err = mp(jsonData)
 		if err != nil {
 			return err
 		}

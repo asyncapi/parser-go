@@ -13,7 +13,7 @@ import (
 const oneOfJSONFile = "./testdata/oneof.json"
 
 var (
-	noopMessageProcessor MessageProcessor = func(_ *map[string]interface{}) error {
+	noopMessageProcessor MessageProcessor = func(_ map[string]interface{}) error {
 		return nil
 	}
 )

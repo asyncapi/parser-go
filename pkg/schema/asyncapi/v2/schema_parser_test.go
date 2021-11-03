@@ -38,7 +38,7 @@ func TestParse_VersionNotFound(t *testing.T) {
 
 	data := make(map[string]interface{})
 	require.NoError(t, json.Unmarshal(b, &data))
-	assert.EqualError(t, Parse(&data), `version "9.9.9-fake" is not supported`)
+	assert.EqualError(t, Parse(data), `version "9.9.9-fake" is not supported`)
 }
 
 func TestParse_AsyncAPIFieldMissing(t *testing.T) {
@@ -70,7 +70,7 @@ func TestParse_AsyncAPIFieldMissing(t *testing.T) {
 
 	data := make(map[string]interface{})
 	require.NoError(t, json.Unmarshal(b, &data))
-	assert.EqualError(t, Parse(&data), "error extracting AsyncAPI Spec version from provided document: the `asyncapi` field is missing")
+	assert.EqualError(t, Parse(data), "error extracting AsyncAPI Spec version from provided document: the `asyncapi` field is missing")
 }
 
 func TestSpec_2_1_0(t *testing.T) {
@@ -123,7 +123,7 @@ func TestSpec_2_1_0(t *testing.T) {
 
 	data := make(map[string]interface{})
 	require.NoError(t, json.Unmarshal(b, &data))
-	assert.NoError(t, Parse(&data))
+	assert.NoError(t, Parse(data))
 }
 
 func TestSpec_2_2_0(t *testing.T) {
@@ -168,5 +168,5 @@ func TestSpec_2_2_0(t *testing.T) {
 
 	data := make(map[string]interface{})
 	require.NoError(t, json.Unmarshal(b, &data))
-	assert.NoError(t, Parse(&data))
+	assert.NoError(t, Parse(data))
 }
