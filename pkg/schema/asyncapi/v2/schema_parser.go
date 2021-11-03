@@ -31,8 +31,7 @@ func Parse(v interface{}) error {
 			return fmt.Errorf("version %q is not supported", version)
 		}
 
-		p := parseSchema.NewParser(s) // TODO return pointer
-		parsers[version] = &p
+		parsers[version] = parseSchema.NewParser(s)
 	}
 
 	return parsers[version].Parse(v)
