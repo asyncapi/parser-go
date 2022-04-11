@@ -1,5 +1,7 @@
 github.com/asyncapi/converter-go v0.0.0-20190802111537-d8459b2bd403 h1:HhobldPK/8Cnhliwl744pXSfyjtF956/vOJLyJ8mrXk=
 github.com/asyncapi/converter-go v0.0.0-20190802111537-d8459b2bd403/go.mod h1:mpJYWYy+USNiLENQxiyGgRc3qtFPxYSWdSd/eS+R6bo=
+github.com/asyncapi/spec-json-schemas/v2 v2.13.2 h1:/14T9QCkCThoSB46pzTKenSkzdZ2DksSSR1LU+HFZYI=
+github.com/asyncapi/spec-json-schemas/v2 v2.13.2/go.mod h1:5lFCFtRGfI3WVOla4slifjgPs9x79FY0fqZjgNL495c=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815 h1:bWDMxwH3px2JBh6AyO7hdCn/PkvCZXii8TGj7sbtEbQ=
@@ -18,8 +20,6 @@ github.com/pkg/errors v0.8.1 h1:iURUrRGxPUNPdy5/HRSm+Yj6okJ6UtLINN0Q9M4+h3I=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
-github.com/smoya/spec-json-schemas v0.0.0-20211102173112-5a531a2b868e h1:stT8PgGHH+dIqWcR7eluWl8+fFxvbc0+00f4DZXc7cw=
-github.com/smoya/spec-json-schemas v0.0.0-20211102173112-5a531a2b868e/go.mod h1:a9mvFC3qmpK7pTc5R1xByL3PYDnekir1XxDyIncYt8k=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.7.0 h1:nwc3DEeHmmLAfoZucVR881uASk0Mfjw8xYJ99tb5CcY=
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
