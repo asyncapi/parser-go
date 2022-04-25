@@ -3,22 +3,22 @@ package v2
 import (
 	parserErrors "github.com/asyncapi/parser-go/pkg/error"
 	"github.com/asyncapi/parser-go/pkg/jsonpath"
-	"github.com/asyncapi/parser-go/pkg/schema/asyncapi/v2"
+	v2 "github.com/asyncapi/parser-go/pkg/schema/asyncapi/v2"
 
 	"github.com/pkg/errors"
 )
 
 type Parser struct {
 	jsonpath.RefLoader
-	root      string
-	documents map[string]*map[string]interface{}
+	root               string
+	documents          map[string]map[string]interface{}
 	referenceTrack     map[string]bool
 	blackListedPathMap map[string]bool
 }
 
 var ErrCircularDependency = errors.New("circular dependency")
 
-func (p Parser) Parse(doc *map[string]interface{}) error {
+func (p Parser) Parse(doc map[string]interface{}) error {
 	// validate document against schema
 	err := v2.Parse(doc)
 	if err != nil {
@@ -30,7 +30,7 @@ func (p Parser) Parse(doc *map[string]interface{}) error {
 	}
 	p.root = ref.URI()
 	p.documents[p.root] = doc
-	documentErrors := p.dereference(ref, *p.documents[p.root])
+	documentErrors := p.dereference(ref, p.documents[p.root])
 	return parserErrors.New(documentErrors...)
 }
 
@@ -60,9 +60,9 @@ func (p *Parser) dereferenceMap(rootRef jsonpath.Ref, v *map[string]interface{})
 					errs = append(errs, err)
 					continue
 				}
-				p.documents[refKey.URI()] = &refDoc
+				p.documents[refKey.URI()] = refDoc
 			}
-			refMap, err := jsonpath.GetRefObject(refKey.Path(), *p.documents[refKey.URI()])
+			refMap, err := jsonpath.GetRefObject(refKey.Path(), p.documents[refKey.URI()])
 			if err != nil {
 				errs = append(errs, errors.Wrap(err, refKey.String()))
 				continue
@@ -120,8 +120,8 @@ func NewParser(refLoader jsonpath.RefLoader, blackListedPaths ...string) Parser 
 		blackListedPathMap[key] = true
 	}
 	return Parser{
-		RefLoader: refLoader,
-		documents: make(map[string]*map[string]interface{}),
+		RefLoader:          refLoader,
+		documents:          make(map[string]map[string]interface{}),
 		referenceTrack:     make(map[string]bool),
 		blackListedPathMap: blackListedPathMap,
 	}

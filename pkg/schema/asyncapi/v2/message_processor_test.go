@@ -12,7 +12,7 @@ import (
 
 func Test_schemaFormat(t *testing.T) {
 	type args struct {
-		m *map[string]interface{}
+		m map[string]interface{}
 	}
 	tests := []struct {
 		name string
@@ -22,7 +22,7 @@ func Test_schemaFormat(t *testing.T) {
 		{
 			name: "schemaFormat present",
 			args: args{
-				m: &map[string]interface{}{
+				m: map[string]interface{}{
 					"schemaFormat": "test",
 				},
 			},
@@ -31,7 +31,7 @@ func Test_schemaFormat(t *testing.T) {
 		{
 			name: "schemaFormat missing",
 			args: args{
-				m: &map[string]interface{}{},
+				m: map[string]interface{}{},
 			},
 			want: "",
 		},
@@ -106,7 +106,7 @@ func Test_extractMessages(t *testing.T) {
 		if err != nil {
 			panic(fmt.Sprintf("invalid test data in: '%s'", tt.channelFile))
 		}
-		var expectedMsgs []*map[string]interface{}
+		var expectedMsgs []map[string]interface{}
 		err = load(tt.expectedMsg, &expectedMsgs, t)
 		if err != nil {
 			panic(fmt.Sprintf("invalid test data in: '%s'", tt.channelFile))
@@ -134,7 +134,7 @@ func TestBuildMessageProcessor(t *testing.T) {
 			return testErr
 		},
 	}
-	var document *map[string]interface{}
+	var document map[string]interface{}
 	docPath := "./testdata/given/anyofdoc.json"
 	err := load(docPath, &document, t)
 	if err != nil {

@@ -6,7 +6,7 @@
 
 The AsyncAPI Parser validates AsyncAPI documents according to dedicated schemas. The supported schemas are:
 
-- AsyncAPI schema
+- AsyncAPI schema (from [spec-json-schemas](https://github.com/asyncapi/spec-json-schemas/tree/master/schemas) module)
 - OpenAPI schema
 - JSON schema
   If you use the parser as a package, you can also register external schemas. For example, you can write your own schema.

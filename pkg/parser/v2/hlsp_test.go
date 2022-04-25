@@ -15,8 +15,8 @@ func TestParser_Parse(t *testing.T) {
 	tests := []struct {
 		name             string
 		blackListedPaths []string
-		doc              *map[string]interface{}
-		expectedDoc      *map[string]interface{}
+		doc              map[string]interface{}
+		expectedDoc      map[string]interface{}
 		expectedErr      bool
 	}{
 		{
@@ -60,7 +60,7 @@ func TestParser_Parse(t *testing.T) {
 	}
 }
 
-func testDataFromFile(dirName, fileName string) *map[string]interface{} {
+func testDataFromFile(dirName, fileName string) map[string]interface{} {
 	file, err := os.Open(fmt.Sprintf("./testdata/%s/%s", dirName, fileName))
 	if err != nil {
 		panic(err)
@@ -70,5 +70,5 @@ func testDataFromFile(dirName, fileName string) *map[string]interface{} {
 	if err != nil {
 		panic(err)
 	}
-	return &fileMap
+	return fileMap
 }

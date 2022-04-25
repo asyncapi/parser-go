@@ -11,16 +11,20 @@ type ParseMessage func(interface{}) error
 
 var _ ParseMessage = (&Parser{}).Parse
 
+// Parser parses a given structure and validates it against a JSON Schema.
 type Parser struct {
 	schemaLoader gojsonschema.JSONLoader
 }
 
-func NewParser(schema []byte) Parser {
-	return Parser{
+// NewParser creates a new Parser.
+func NewParser(schema []byte) *Parser {
+	return &Parser{
 		schemaLoader: gojsonschema.NewBytesLoader(schema),
 	}
 }
 
+// Parse is the main function to parse a given structure and validate it against a JSON Schema.
+// Implements ParseMessage.
 func (p *Parser) Parse(data interface{}) error {
 	documentLoader := gojsonschema.NewGoLoader(data)
 	result, err := gojsonschema.Validate(p.schemaLoader, documentLoader)

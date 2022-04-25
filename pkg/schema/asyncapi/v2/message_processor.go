@@ -10,8 +10,8 @@ import (
 
 var ErrInvalidValue = errors.New("invalid value")
 
-func schemaFormat(m *map[string]interface{}) string {
-	schemaFormat, found := (*m)["schemaFormat"]
+func schemaFormat(m map[string]interface{}) string {
+	schemaFormat, found := m["schemaFormat"]
 	if !found {
 		return ""
 	}
@@ -20,7 +20,7 @@ func schemaFormat(m *map[string]interface{}) string {
 
 type Dispatcher map[string]func(interface{}) error
 
-func (d Dispatcher) do(messages []*map[string]interface{}) error {
+func (d Dispatcher) do(messages []map[string]interface{}) error {
 	var errs []error
 	for _, msg := range messages {
 		schemaFormat := schemaFormat(msg)
@@ -43,10 +43,10 @@ func (d *Dispatcher) Add(pm func(interface{}) error, labels ...string) error {
 	return nil
 }
 
-func BuildMessageProcessor(dispatcher Dispatcher) func(*map[string]interface{}) error {
-	return func(doc *map[string]interface{}) error {
+func BuildMessageProcessor(dispatcher Dispatcher) func(map[string]interface{}) error {
+	return func(doc map[string]interface{}) error {
 		var errs []error
-		channels, found := (*doc)["channels"].(map[string]interface{})
+		channels, found := (doc)["channels"].(map[string]interface{})
 		if !found {
 			return errors.Wrap(ErrInvalidValue, "channels")
 		}
@@ -64,10 +64,10 @@ func BuildMessageProcessor(dispatcher Dispatcher) func(*map[string]interface{}) 
 	}
 }
 
-func extractMessages(channel interface{}) ([]*map[string]interface{}, error) {
+func extractMessages(channel interface{}) ([]map[string]interface{}, error) {
 	var (
-		messages []*map[string]interface{}
-		errs []error
+		messages []map[string]interface{}
+		errs     []error
 	)
 	channelMap, ok := channel.(map[string]interface{})
 	if !ok {
@@ -88,22 +88,22 @@ func extractMessages(channel interface{}) ([]*map[string]interface{}, error) {
 	return messages, parserErrors.New(errs...)
 }
 
-func extractMessage(message interface{}) ([]*map[string]interface{}, error) {
+func extractMessage(message interface{}) ([]map[string]interface{}, error) {
 	msg, ok := message.(map[string]interface{})
 	if !ok {
 		return nil, errors.Wrap(ErrInvalidValue, "message")
 	}
 	oneOf, ok := msg["oneOf"]
 	if !ok {
-		return []*map[string]interface{}{
-			&msg,
+		return []map[string]interface{}{
+			msg,
 		}, nil
 	}
 	oneOfList, ok := oneOf.([]interface{})
 	if !ok {
 		return nil, errors.Wrap(ErrInvalidValue, "oneOf")
 	}
-	var result []*map[string]interface{}
+	var result []map[string]interface{}
 	var errs []error
 	for _, msg := range oneOfList {
 		msgMap, ok := msg.(map[string]interface{})
@@ -111,7 +111,7 @@ func extractMessage(message interface{}) ([]*map[string]interface{}, error) {
 			errs = append(errs, errors.Wrap(ErrInvalidValue, "message"))
 			continue
 		}
-		result = append(result, &msgMap)
+		result = append(result, msgMap)
 	}
 	return result, parserErrors.New(errs...)
 }
