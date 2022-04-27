@@ -1,7 +1,7 @@
 github.com/asyncapi/converter-go v0.0.0-20190802111537-d8459b2bd403 h1:HhobldPK/8Cnhliwl744pXSfyjtF956/vOJLyJ8mrXk=
 github.com/asyncapi/converter-go v0.0.0-20190802111537-d8459b2bd403/go.mod h1:mpJYWYy+USNiLENQxiyGgRc3qtFPxYSWdSd/eS+R6bo=
-github.com/asyncapi/spec-json-schemas/v2 v2.13.2 h1:/14T9QCkCThoSB46pzTKenSkzdZ2DksSSR1LU+HFZYI=
-github.com/asyncapi/spec-json-schemas/v2 v2.13.2/go.mod h1:5lFCFtRGfI3WVOla4slifjgPs9x79FY0fqZjgNL495c=
+github.com/asyncapi/spec-json-schemas/v2 v2.14.0 h1:t5Frb4WzaV2bTlcRqXhBdvqTjO6+n/oiPMjvCxYooag=
+github.com/asyncapi/spec-json-schemas/v2 v2.14.0/go.mod h1:5lFCFtRGfI3WVOla4slifjgPs9x79FY0fqZjgNL495c=
 github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWRnGsAI=
 github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e/go.mod h1:nSuG5e5PlCu98SY8svDHJxuZscDgtXS6KTTbou5AhLI=
 github.com/chzyer/test v0.0.0-20180213035817-a1ea475d72b1/go.mod h1:Q3SI9o4m/ZMnBNeIyt5eFwwo7qiLfzFZmjNmxjkiQlU=
