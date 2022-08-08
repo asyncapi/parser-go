@@ -1,6 +1,8 @@
 package v2
 
 import (
+	"strings"
+
 	parserErrors "github.com/asyncapi/parser-go/pkg/error"
 	"github.com/asyncapi/parser-go/pkg/jsonpath"
 	v2 "github.com/asyncapi/parser-go/pkg/schema/asyncapi/v2"
@@ -48,6 +50,12 @@ func (p *Parser) dereferenceMap(rootRef jsonpath.Ref, v *map[string]interface{})
 				continue
 			}
 			p.referenceTrack[rootRef.String()] = false
+
+			// to allow recursive de-referencing, prepend the current root uri on local references
+			if s, ok := value.(string); ok && strings.HasPrefix(s, "#") {
+				value = rootRef.URI() + s
+			}
+
 			refKey, err := jsonpath.NewRef(value)
 			if err != nil {
 				errs = append(errs, err)

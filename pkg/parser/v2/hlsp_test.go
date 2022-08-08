@@ -43,6 +43,13 @@ func TestParser_Parse(t *testing.T) {
 			doc:              testDataFromFile("input", "invalid-ref.json"),
 			expectedErr:      true,
 		},
+		{
+			name:             "recursive-references",
+			blackListedPaths: []string{"#/components/schemas"},
+			doc:              testDataFromFile("input", "recref0.json"),
+			expectedDoc:      testDataFromFile("output", "recref.json"),
+			expectedErr:      false,
+		},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {

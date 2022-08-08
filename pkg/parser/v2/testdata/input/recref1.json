@@ -1,0 +1,33 @@
+{
+  "id": "urn:com:smartylighting:streetlights:server",
+  "info": {
+    "version": "1.0.0",
+    "title": "AnyOf example"
+  },
+  "channels": {
+    "test": {
+      "publish": {
+        "message": {
+          "$ref": "#/components/schemas/objectWithKey1"
+        }
+      }
+    }
+  },
+  "asyncapi": "2.0.0",
+  "components": {
+    "schemas": {
+      "objectWithKey1": {
+        "type": "object",
+        "$ref": "#/components/schemas/objectWithKey2"
+      },
+      "objectWithKey2": {
+        "type": "object",
+        "properties": {
+          "key2": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
