@@ -7,7 +7,7 @@ name: PR testing - if Go project
 on:
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review]
-    
+
 jobs:
   lint-go-pr:
     name: Lint Go PR
@@ -17,10 +17,10 @@ jobs:
         id: should_run
         name: Should Run
         run: echo "::set-output name=shouldrun::true"
-      - if: steps.should_run.outputs.shouldrun == 'true' 
+      - if: steps.should_run.outputs.shouldrun == 'true'
         name: Checkout repository
         uses: actions/checkout@v2
-      - if: steps.should_run.outputs.shouldrun == 'true' 
+      - if: steps.should_run.outputs.shouldrun == 'true'
         name: Check if Go project and has go.mod
         id: gomod
         run: test -e ./go.mod && echo "::set-output name=exists::true" || echo "::set-output name=exists::false"
@@ -35,7 +35,7 @@ jobs:
         uses: golangci/golangci-lint-action@v2 # golangci-lint version extracted from go.mod. `latest` if missing.
         with:
           skip-go-installation: true # we wanna control the version of Go in use
-  
+
   test-go-pr:
     name: Test Go PR - ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
@@ -47,10 +47,10 @@ jobs:
         id: should_run
         name: Should Run
         run: echo "::set-output name=shouldrun::true"
-      - if: steps.should_run.outputs.shouldrun == 'true' 
+      - if: steps.should_run.outputs.shouldrun == 'true'
         name: Checkout repository
         uses: actions/checkout@v2
-      - if: steps.should_run.outputs.shouldrun == 'true' 
+      - if: steps.should_run.outputs.shouldrun == 'true'
         name: Check if Go project and has go.mod
         id: gomod
         run: test -e ./go.mod && echo "::set-output name=exists::true" || echo "::set-output name=exists::false"
@@ -66,4 +66,3 @@ jobs:
       - if: steps.gomod.outputs.exists == 'true'
         name: Test
         run: go test -v ./...
- 
