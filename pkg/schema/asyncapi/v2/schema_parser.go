@@ -6,7 +6,7 @@ import (
 	"github.com/pkg/errors"
 
 	parseSchema "github.com/asyncapi/parser-go/pkg/schema"
-	schemas "github.com/asyncapi/spec-json-schemas/v2"
+	schemas "github.com/asyncapi/spec-json-schemas/v4"
 )
 
 var (
