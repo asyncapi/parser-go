@@ -13,7 +13,7 @@
       }
     }
   },
-  "asyncapi": "2.0.0",
+  "asyncapi": "2.6.0",
   "components": {
     "messages": {
       "testMessages": {
