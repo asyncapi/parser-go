@@ -4,7 +4,7 @@ go 1.12
 
 require (
 	github.com/asyncapi/converter-go v0.3.0
-	github.com/asyncapi/spec-json-schemas/v4 v4.3.0
+	github.com/asyncapi/spec-json-schemas/v4 v4.3.1
 	github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815
 	github.com/onsi/gomega v1.27.7
 	github.com/pkg/errors v0.9.1
