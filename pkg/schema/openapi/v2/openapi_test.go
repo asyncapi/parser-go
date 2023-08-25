@@ -1,12 +1,12 @@
 package v2
 
 import (
-	. "github.com/onsi/gomega"
-
 	"encoding/json"
 	"io/ioutil"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestParse(t *testing.T) {
@@ -38,17 +38,16 @@ func TestParse(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			g := NewWithT(t)
 			msg := loadMsg(test.msg, t)
 			err := Parse(&msg)
-			g.Expect(err).ShouldNot(HaveOccurred())
+			assert.NoError(t, err)
 
 			payload, err := json.Marshal(msg)
 			if err != nil {
 				t.Fatal("data marshalling error", err)
 			}
 			expected := open(test.expected, t)
-			g.Expect(payload).Should(MatchJSON(expected))
+			assert.JSONEq(t, string(expected), string(payload))
 		})
 	}
 }

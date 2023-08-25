@@ -1,14 +1,14 @@
 package jsonpath
 
 import (
-	. "github.com/onsi/gomega"
-
 	"bytes"
 	"encoding/json"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func data() io.ReadCloser {
@@ -45,13 +45,13 @@ func TestLoader(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			g := NewWithT(t)
 			loader := NewRefLoader(&ClientMock{})
 			actual, err := loader.Load(test.name)
-			g.Expect(err).ShouldNot(HaveOccurred())
-			g.Expect(actual).To(Equal(map[string]interface{}{
+			assert.NoError(t, err)
+			expected := map[string]interface{}{
 				"test": "me",
-			}))
+			}
+			assert.Equal(t, expected, actual)
 		})
 	}
 }
@@ -65,10 +65,9 @@ func TestLoaderErr(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			g := NewWithT(t)
 			loader := NewRefLoader(&ClientMock{})
 			_, err := loader.Load(test.name)
-			g.Expect(err).Should(HaveOccurred())
+			assert.Error(t, err)
 		})
 	}
 }

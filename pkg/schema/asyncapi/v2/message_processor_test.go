@@ -1,13 +1,13 @@
 package v2
 
 import (
-	. "github.com/onsi/gomega"
-
 	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_schemaFormat(t *testing.T) {
@@ -38,9 +38,8 @@ func Test_schemaFormat(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			g := NewWithT(t)
 			format := schemaFormat(tt.args.m)
-			g.Expect(format).To(Equal(tt.want))
+			assert.Equal(t, tt.want, format)
 		})
 	}
 }
@@ -70,11 +69,11 @@ func TestDispatcher_Add(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			g := NewWithT(t)
 			err := tt.d.Add(tt.args.pm, tt.args.labels...)
-			g.Expect(err).ShouldNot(HaveOccurred())
+			assert.NoError(t, err)
+
 			for _, label := range tt.args.labels {
-				g.Expect(tt.d[label]).NotTo(BeNil())
+				assert.NotNil(t, tt.d[label])
 			}
 		})
 	}
@@ -112,19 +111,18 @@ func Test_extractMessages(t *testing.T) {
 			panic(fmt.Sprintf("invalid test data in: '%s'", tt.channelFile))
 		}
 		t.Run(tt.name, func(t *testing.T) {
-			g := NewWithT(t)
 			got, err := extractMessages(channel)
 			if tt.wantErr {
-				g.Expect(err).Should(HaveOccurred())
+				assert.NoError(t, err)
 				return
 			}
-			g.Expect(got).To(Equal(expectedMsgs))
+
+			assert.Equal(t, expectedMsgs, got)
 		})
 	}
 }
 
 func TestBuildMessageProcessor(t *testing.T) {
-	g := NewWithT(t)
 	testErr := errors.New("test error")
 	d := Dispatcher{
 		"test1": func(_ interface{}) error {
@@ -142,7 +140,7 @@ func TestBuildMessageProcessor(t *testing.T) {
 	}
 	processMessages := BuildMessageProcessor(d)
 	err = processMessages(document)
-	g.Expect(err).Should(HaveOccurred())
+	assert.Error(t, err)
 }
 
 func load(path string, v interface{}, t *testing.T) error {

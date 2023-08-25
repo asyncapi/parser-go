@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	. "github.com/onsi/gomega"
+	"github.com/stretchr/testify/assert"
 )
 
 const oneOfJSONFile = "./testdata/oneof.json"
@@ -19,13 +19,12 @@ var (
 )
 
 func TestMessageProcessor_BuildParser(t *testing.T) {
-	g := NewWithT(t)
 	parse := noopMessageProcessor.BuildParser()
 	writer := bytes.NewBufferString("")
 	reader, err := os.Open(oneOfJSONFile)
-	g.Expect(err).ShouldNot(HaveOccurred())
+	assert.NoError(t, err)
 	err = parse(reader, writer)
-	g.Expect(err).ShouldNot(HaveOccurred())
+	assert.NoError(t, err)
 }
 
 func TestNewReader(t *testing.T) {
@@ -54,10 +53,9 @@ func TestNewReader(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			g := NewWithT(t)
 			r, err := NewReader(test.doc)
-			g.Expect(err).ShouldNot(HaveOccurred())
-			g.Expect(r).ShouldNot(BeNil())
+			assert.NoError(t, err)
+			assert.NotNil(t, r)
 		})
 	}
 }

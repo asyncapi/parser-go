@@ -2,8 +2,9 @@ package jsonpath
 
 import (
 	"fmt"
-	. "github.com/onsi/gomega"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestDecodeItemName(t *testing.T) {
@@ -26,10 +27,9 @@ func TestDecodeItemName(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(fmt.Sprintf(`Expect:"%s"`, test.expected), func(t *testing.T) {
-			g := NewWithT(t)
 			actual, err := DecodeEntryKey(test.name)
-			g.Expect(err).ShouldNot(HaveOccurred())
-			g.Expect(actual).To(Equal(test.expected))
+			assert.NoError(t, err)
+			assert.Equal(t, test.expected, actual)
 		})
 	}
 }
@@ -51,9 +51,8 @@ func TestDecodeItemNameErr(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(fmt.Sprintf(`Expect err:"%s"`, test.name), func(t *testing.T) {
-			g := NewWithT(t)
 			_, err := DecodeEntryKey(test.name)
-			g.Expect(err).Should(HaveOccurred())
+			assert.Error(t, err)
 		})
 	}
 }
@@ -65,8 +64,7 @@ func TestNewReference(t *testing.T) {
 	}{
 		{
 			strRef: "/test/path#/test/me/plz",
-			expected:
-			Ref{
+			expected: Ref{
 				pointer: "/test/me/plz",
 				uri:     "/test/path",
 				path:    []string{"test", "me", "plz"},
@@ -75,10 +73,9 @@ func TestNewReference(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.strRef, func(t *testing.T) {
-			g := NewWithT(t)
 			ref, err := NewRef(test.strRef)
-			g.Expect(err).ShouldNot(HaveOccurred())
-			g.Expect(ref).To(Equal(test.expected))
+			assert.NoError(t, err)
+			assert.Equal(t, test.expected, ref)
 		})
 	}
 }
@@ -89,15 +86,13 @@ func TestNewReference_ShouldReturnError(t *testing.T) {
 		"",
 	} {
 		t.Run(test, func(t *testing.T) {
-			g := NewWithT(t)
 			_, err := NewRef(test)
-			g.Expect(err).Should(HaveOccurred())
+			assert.Error(t, err)
 		})
 	}
 }
 
 func TestGetRefObject(t *testing.T) {
-	g := NewWithT(t)
 	v := map[string]interface{}{
 		"test": map[string]interface{}{
 			"me": map[string]interface{}{
@@ -106,8 +101,10 @@ func TestGetRefObject(t *testing.T) {
 		},
 	}
 	actual, err := GetRefObject([]string{"test", "me"}, v)
-	g.Expect(err).ShouldNot(HaveOccurred())
-	g.Expect(actual).To(Equal(map[string]interface{}{
+	assert.NoError(t, err)
+
+	expected := map[string]interface{}{
 		"plz": true,
-	}))
+	}
+	assert.Equal(t, expected, actual)
 }
