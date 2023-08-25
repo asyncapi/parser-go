@@ -11,30 +11,30 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go: 
+        go:
           - '1.18'
           - '1.17'
           - '1.16'
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v4
         with:
           go-version: '${{ matrix.go }}'
       - name: Invoking go test
         run: go test ./...
-  
+
   release:
     name: 'Release to GitHub'
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - test
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v4
         with:
           go-version: '1.18'
       - name: Invoking go vet and binaries generation
@@ -44,7 +44,7 @@ jobs:
           GOOS=linux GOARCH=amd64 go build -o=.github/workflows/asyncapi-parser.linux.amd64 ./cmd/api-parser/main.go
           GOOS=windows GOARCH=amd64 go build -o=.github/workflows/asyncapi-parser.windows.amd64.exe ./cmd/api-parser/main.go
       - name: Setup Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: 14
       - name: Add plugin for conventional commits
