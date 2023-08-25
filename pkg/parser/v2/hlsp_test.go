@@ -3,7 +3,7 @@ package v2
 import (
 	"github.com/asyncapi/parser-go/pkg/decode"
 	"github.com/asyncapi/parser-go/pkg/jsonpath"
-	. "github.com/onsi/gomega"
+	"github.com/stretchr/testify/assert"
 
 	"fmt"
 	"net/http"
@@ -53,16 +53,15 @@ func TestParser_Parse(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			g := NewWithT(t)
 			refLoader := jsonpath.NewRefLoader(http.DefaultClient)
 			p := NewParser(refLoader, test.blackListedPaths...)
 			err := p.Parse(test.doc)
 			if test.expectedErr {
-				g.Expect(err).Should(HaveOccurred())
+				assert.Error(t, err)
 				return
 			}
-			g.Expect(err).ShouldNot(HaveOccurred())
-			g.Expect(test.doc).To(Equal(test.expectedDoc))
+			assert.NoError(t, err)
+			assert.Equal(t, test.expectedDoc, test.doc)
 		})
 	}
 }

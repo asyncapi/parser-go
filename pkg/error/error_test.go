@@ -3,23 +3,21 @@ package error
 import (
 	"testing"
 
-	"github.com/pkg/errors"
+	"github.com/stretchr/testify/assert"
 
-	. "github.com/onsi/gomega"
+	"github.com/pkg/errors"
 )
 
 var errTest = errors.New("test error")
 
 func TestNewNil(t *testing.T) {
-	g := NewWithT(t)
 	err := New()
-	g.Expect(err).To(BeNil())
+	assert.NoError(t, err)
 }
 
 func TestNew(t *testing.T) {
-	g := NewWithT(t)
 	err := New(errTest)
-	g.Expect(err.Error()).To(Equal("test error"))
+	assert.Error(t, err, "test error")
 }
 
 func TestJoin(t *testing.T) {
@@ -46,9 +44,8 @@ func TestJoin(t *testing.T) {
 	}
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
-			g := NewWithT(t)
 			errMsg := Join(tC.errs, "|")
-			g.Expect(errMsg).To(Equal(tC.expectedMessage))
+			assert.Equal(t, tC.expectedMessage, errMsg)
 		})
 	}
 }

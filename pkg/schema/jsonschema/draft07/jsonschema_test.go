@@ -1,17 +1,16 @@
 package draft07
 
 import (
-	. "github.com/onsi/gomega"
+	"github.com/stretchr/testify/assert"
 
 	"encoding/json"
 	"testing"
 )
 
 func TestParseInvalidSchemaObject(t *testing.T) {
-	g := NewWithT(t)
 	v := "this will not work"
 	err := Parse(v)
-	g.Expect(err).Should(HaveOccurred())
+	assert.Error(t, err)
 }
 
 func TestParse(t *testing.T) {
@@ -31,7 +30,7 @@ func TestParse(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			err := Parse(&test.v)
-			NewWithT(t).Expect(err).ShouldNot(HaveOccurred())
+			assert.NoError(t, err)
 		})
 	}
 }
