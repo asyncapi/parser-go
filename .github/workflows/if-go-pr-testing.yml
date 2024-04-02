@@ -30,6 +30,7 @@ jobs:
         id: should_run
         name: Should Run
         run: echo "shouldrun=true" >> $GITHUB_OUTPUT
+        shell: bash
       - if: steps.should_run.outputs.shouldrun == 'true'
         name: Checkout repository
         uses: actions/checkout@v3
@@ -74,6 +75,7 @@ jobs:
         id: should_run
         name: Should Run
         run: echo "shouldrun=true" >> $GITHUB_OUTPUT
+        shell: bash
       - if: steps.should_run.outputs.shouldrun == 'true'
         name: Checkout repository
         uses: actions/checkout@v3
